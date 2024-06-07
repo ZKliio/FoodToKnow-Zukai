@@ -14,18 +14,20 @@ interface FoodItem {
   _id: string; // Assuming a unique identifier for each food item
   name: string; // Name of the food item
   calories: number; // Calories of the food item
+  protein: number; // Proteins of the food item (added property)
 }
 
 const Searchbar = () => {
-  const [searchText, setText] = useState('');
+  const [filterCondition, setFilterCondition] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [foodData, setFoodData] = useState<FoodItem[]>([]);
+  const [filteredData, setFilteredData] = useState<FoodItem[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`http://10.0.2.2:3000/foodInfo?query=${searchText}`);
+        const response = await axios.get(`http://10.0.2.2:3000/foodInfo`);
         setFoodData(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -34,12 +36,19 @@ const Searchbar = () => {
       }
     };
 
-    if (searchText) {
-      fetchData();
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (filterCondition) {
+      const filtered = foodData.filter(item =>
+        item.name.toLowerCase().includes(filterCondition.toLowerCase())
+      );
+      setFilteredData(filtered);
     } else {
-      setFoodData([]);
+      setFilteredData(foodData);
     }
-  }, [searchText]);
+  }, [filterCondition, foodData]);
 
   const renderItem = ({ item }: { item: FoodItem }) => (
     <View style={styles.item}>
@@ -52,19 +61,19 @@ const Searchbar = () => {
   return (
     <SafeAreaView style={styles.container}>
       <TextInput
-        value={searchText}
-        onChangeText={setText}
+        value={filterCondition}
+        onChangeText={setFilterCondition}
         placeholder="Search for food..."
         style={styles.searchBar}
       />
       {isLoading && <ActivityIndicator size="large" style={styles.loadingIndicator} />}
       <FlatList
-        data={foodData}
+        data={filteredData}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
         ListEmptyComponent={() => (
           <Text style={styles.emptyText}>
-            {searchText ? 'No results found.' : 'Search for food items.'}
+            {filterCondition ? 'No results found.' : 'Search for food items.'}
           </Text>
         )}
       />

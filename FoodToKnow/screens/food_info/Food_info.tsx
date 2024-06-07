@@ -51,7 +51,7 @@ const FoodInfo = () => {
   const [foods, setFoods] = useState<Food[]>([]);
     useEffect(() => {
       fetchFood();
-    }, []);
+    }, [filterCondition]);
     
     useFocusEffect(
       useCallback(() => {
@@ -64,11 +64,13 @@ const FoodInfo = () => {
   }, [filterCondition]);
    
     const fetchFood = async () => {
-     
+
         axios
-        .get('http://10.0.2.2:3000/foodInfo')
+        .get('http://10.0.2.2:3000/foodInfo', {
+          params: { foodSearched: filterCondition },
+        })
         .then(  response => {
-        console.log(response.data)
+        //console.log(response.data)
 
         console.log("Food info fetched successfully");
         //const foods = response.data
@@ -92,22 +94,21 @@ const FoodInfo = () => {
   return (
     <View style={styles.background}>
       
-      <View style={styles.searchBarContainer}>
-        <Text style={styles.text}>Food Info</Text>
-        <Searchbar />
-      </View>
-
+      
+      <Text style={styles.text}>Food Info</Text>
+      
+      <Searchbar />
       <View style={styles.buttonRow}>
         <TouchableOpacity style={styles.searchButton} onPress={fetchFood}>
           <Text style={styles.searchText}>Refresh</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.searchButton}>
+        <TouchableOpacity style={styles.searchButton} onPress={fetchFood}>
           <Text style={styles.searchText}>Search</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={styles.listContainer}>
+      {/* <View style={styles.listContainer}>
         <FlatList
           data={foods}
           keyExtractor={(item) => item._id.toString()}
@@ -119,7 +120,7 @@ const FoodInfo = () => {
             </View>
           )}
         />
-      </View>
+      </View> */}
     </View>
   );
 };
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
       color: 'black',
       fontSize: 20,
       fontWeight: 'bold',
-      backgroundColor: 'white',
+      backgroundColor: 'transparent',
       margin: 90,
       justifyContent: 'flex-start',
     },
@@ -154,8 +155,8 @@ const styles = StyleSheet.create({
 
     searchBarContainer: {
       backgroundColor: 'transparent',
-      padding: 10,
-      flex: 0.8,
+      padding: 0,
+      flex: 1,
       marginTop: 10,
       alignItems: 'center',
       justifyContent: 'center',
