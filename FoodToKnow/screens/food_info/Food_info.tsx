@@ -24,7 +24,8 @@ import React, { useCallback, useEffect, useState, useContext} from "react";
 
 // const { useQuery, useRealm } = RealmContext
 import { useFocusEffect } from "@react-navigation/native";
-import {FoodType} from "../../Context.js";
+import {FoodType} from "../../FoodContext.js";
+import {SERVER_URL} from "../../enviroment";
 const FoodInfo = () => {
   
    // const fetchFood = async () => {
@@ -39,6 +40,7 @@ const FoodInfo = () => {
   // const searchText = searchText;
   const { foodId, setFoodId } = useContext(FoodType);
   const [filterCondition, setFilterCondition] = useState('');
+
   interface Food {
     _id: string;
     name: string;
@@ -66,7 +68,7 @@ const FoodInfo = () => {
     const fetchFood = async () => {
 
         axios
-        .get('http://10.0.2.2:3000/foodInfo', {
+        .get(`${SERVER_URL}/foodInfo`, { // 'http://10.0.2.2:3000/foodInfo' 
           params: { foodSearched: filterCondition },
         })
         .then(  response => {

@@ -35,7 +35,7 @@ import HomepageButtons from '../home/HomepageButtons';
 import MealPlanner from '../meal_planner/Meal_planner';
 import FoodInfo from '../food_info/Food_info';
 import FoodFinder from '../food_finder/Food_Finder';
-import Profile from '../home/Profile';
+import Profile from '../settings/Profile';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export type RootStackParamList = {
@@ -78,8 +78,8 @@ const LoginScreen = () => {
       
     
     return (  //the independent = {true} helps to account for nested navigation
-        <NavigationContainer independent={true}>  
-            <Stack.Navigator  initialRouteName="SignIn" >
+        <NavigationContainer independent={true}>    
+            <Stack.Navigator  initialRouteName="Homepage" >
                 <Stack.Screen name="SignIn" component={SignInScreen} options = {{headerShown: false}}/>
                 <Stack.Screen name="Homepage" component = {Homepage} options = {{headerShown: false}}/>
               

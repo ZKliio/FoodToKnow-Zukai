@@ -96,7 +96,7 @@
 
 // Meal_planner.tsx
 
-import { MealType } from '../../Context';
+//import { MealType } from '../../Context';
 
 // const MealPlanner = () => {
 //   const [meals, setMeals] = useState([]);
@@ -201,7 +201,7 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity,
   } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import axios from 'axios';
-
+import { SERVER_URL } from '../../enviroment';
 // //version 3 30th May 2024 1900hrs
 // const MealPlanner = () => {
 //   const [meals, setMeals] = useState([]);
@@ -352,7 +352,7 @@ const MealPlanner = () => {
   const [healthCondition, setHealthCondition] = useState('');
   const [filterCondition, setFilterCondition] = useState('');
   const [editingMeal, setEditingMeal] = useState(null);
-
+  ;
   
   useEffect(() => {
     fetchMeals();
@@ -360,8 +360,8 @@ const MealPlanner = () => {
 
   const fetchMeals = async () => {
     try {
-      const response = await axios.get('http://10.0.2.2:3000/meals', {
-        params: { healthCondition: filterCondition },
+      const response = await axios.get(`${SERVER_URL}/meals`, { // 'http://10.0.2.2:3000/meals'
+        params: { healthCondition: filterCondition }, 
       });
       setMeals(response.data);
     } catch (error) {
@@ -372,7 +372,7 @@ const MealPlanner = () => {
   const addMeal = async () => {
     if (mealName.trim() && mealDetails.trim() && healthCondition.trim()) {
       try {
-        const response = await axios.post('http://10.0.2.2:3000/meals', {
+        const response = await axios.post(`${SERVER_URL}/meals`, {
           name: mealName,
           details: mealDetails,
           healthCondition,
@@ -389,7 +389,7 @@ const MealPlanner = () => {
 
   const deleteMeal = async (id) => {
     try {
-      await axios.delete(`http://10.0.2.2:3000/meals/${id}`);
+      await axios.delete(`${SERVER_URL}/meals/${id}`);
       setMeals(meals.filter(meal => meal._id !== id));
     } catch (error) {
       console.error('Error deleting meal:', error);
@@ -406,7 +406,7 @@ const MealPlanner = () => {
   const editMeal = async () => {
     if (editingMeal && mealName.trim() && mealDetails.trim() && healthCondition.trim()) {
       try {
-        const response = await axios.put(`http://10.0.2.2:3000/meals/${editingMeal._id}`, {
+        const response = await axios.put(`${SERVER_URL}/meals/${editingMeal._id}`, {
           name: mealName,
           details: mealDetails,
           healthCondition,
@@ -424,7 +424,7 @@ const MealPlanner = () => {
       }
     }
   };
-
+  
   return (
     <ScrollView>
     <View style={styles.container}>

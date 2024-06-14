@@ -13,17 +13,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 const jwt = require('jsonwebtoken');
 
-// mongoose
-//      .connect('mongodb+srv://admin:helloWorld@cluster0.alrrknh.mongodb.net/',{
-//      useNewUrlParser: true,
-//      useUnifiedTopology: true,
-//      dbName: "Food2Know",
-   
-//  }).then(() =>{
-//     console.log("Connected to MongoDB")
-// }).catch((err) => {
-//     console.log("Error connecting to MongoDB" + err);
-// })
 
 const conn1 = mongoose
      .createConnection('mongodb+srv://admin:helloWorld@cluster0.alrrknh.mongodb.net/',{
@@ -32,11 +21,6 @@ const conn1 = mongoose
      dbName: "Food2Know",
    
  })
-//  .then(() =>{
-//     console.log("Connected to ZK MongoDB")
-// }).catch((err) => {
-//     console.log("Error connecting to MongoDB" + err);
-// })
 
 const conn2 = mongoose.createConnection('mongodb+srv://Poweryo:U.HuF*k67c$jfgv@cluster0.pqjb66t.mongodb.net/', {
         useNewUrlParser: true,
@@ -44,12 +28,6 @@ const conn2 = mongoose.createConnection('mongodb+srv://Poweryo:U.HuF*k67c$jfgv@c
         dbName: 'Food2Know',
 
     })
-//     .then(() =>{
-//     console.log("Connected to KX MongoDB")
-// }).catch((err) => {
-//     console.log("Error connecting to MongoDB" + err);
-// })
-
 
 
 const Food = conn1.model('food', require("./models/foodInfo"));
@@ -71,21 +49,12 @@ app.listen(port, () => {
       console.log("Server listening on port " + port);
     })
 
-// Connect to MongoDB
-// mongoose.connect('mongodb+srv://Poweryo:U.HuF*k67c$jfgv@cluster0.pqjb66t.mongodb.net/', {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//     dbName: 'Food2Know',
-//   })
-//   .then(() => {
-//     console.log('Connected to the Database.');
-//   })
-//   .catch(err => console.error(err));
+// app.listen(PORT, HOST, () => {
+//   console.log(`[${HOST}:${PORT}] Server is running`)
+// })
+// const PORT = 3000;
+// const HOST = '192.168.1.254';
 
-
-
-// // const Food = require("./models/foodInfo");
-// // const { error } = require('console');
 
 // //endpoint for retrieving foodInfo
 

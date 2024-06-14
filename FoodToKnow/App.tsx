@@ -33,7 +33,7 @@ import Homepage from "./screens/home/Homepage.tsx";
 import MealPlanner from "./screens/meal_planner/Meal_planner.tsx";
 import FoodInfo from "./screens/food_info/Food_info.tsx";
 import FoodFinder from "./screens/food_finder/Food_Finder.tsx"
-import Profile from "./screens/home/Profile.tsx";
+import Profile from "./screens/settings/Profile.tsx";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -73,9 +73,10 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 // import React from 'react';
 // import {RealmProvider} from '@realm/react';
 import {Profiles} from './schemas/Profiles';
-import { FoodContext } from './Context.js';
+import { FoodContext } from './FoodContext.js';
 import { MealContext } from './MealContext.js';
 import LoginScreen from './screens/login/LoginScreen.tsx';
+
 function App() {
   type Stack = {
     Screen: {
@@ -90,12 +91,8 @@ function App() {
     <FoodContext>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="LoginScreen" component={LoginScreen} />
-          <Stack.Screen name="Home" component={Homepage} />
-          <Stack.Screen name="MealPlanner" component={MealPlanner} />
-          <Stack.Screen name="FoodInfo" component ={FoodInfo} />
-          <Stack.Screen name="FoodFinder" component={FoodFinder} />
-          <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="LoginScreen" component={LoginScreen} options = {{headerShown: false}} />
+
         </Stack.Navigator>
     
 
