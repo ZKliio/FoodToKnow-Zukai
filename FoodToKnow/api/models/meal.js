@@ -1,21 +1,13 @@
 const mongoose = require('mongoose');
 
-const mealSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        unique: true,
-        required: true,
-    },
-    details: {
-        type: String,
-        unique: true,
-        required: true,
-    },
-    healthCondition: {
-        type: String,
-        
-    },
-  });
-  
+const Meal = new mongoose.Schema({
+  userId: { type: String, required: true, unique: false },
+  Date: { type: String, required: true },
+  selectedFoods: [{ _id: String, name: String, calories: Number, protein: Number, carbs: Number, fat: Number, count: Number }],
+  selectedLunches: [{ _id: String, name: String, calories: Number, protein: Number, carbs: Number, fat: Number, count: Number }],
+  selectedDinners: [{ _id: String, name: String, calories: Number, protein: Number, carbs: Number, fat: Number, count: Number }],
+});
 
-  module.exports = mealSchema;
+
+
+module.exports = Meal;

@@ -1,367 +1,209 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import type {PropsWithChildren} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    useColorScheme,
-    View,
-    Button,
-    TextInput,
-    KeyboardAvoidingView,
-    Platform,
-    Image,
-    Alert,
-    useWindowDimensions,
-    FlatList,
-
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TextInput,
+  Alert,
+  Image,
 } from 'react-native';
-
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useNavigation } from '@react-navigation/native';
-import {useForm, Controller } from "react-hook-form";
-import { firebase } from '../authentication.tsx';
-import { initializeApp } from '@firebase/app';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
+import { useForm, Controller } from 'react-hook-form';
 
-
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from 'firebase/auth';
+import { useAuth } from '../../AuthContext';
 import logo from './imagef2know1.png';
 import CustomInput from './CustomInput';
 import CustomButton from './CustomButton.tsx';
 import Homepage from '../home/Homepage.tsx';
+import AppNavigation from '../../components/NavigationTab.tsx';
+import login from './index.js';
 
 
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDH9x0MVqChBLsWHaqqqk-WMlUBSyG2uqQ",
-    authDomain: "testing-180c7.firebaseapp.com",
-    projectId: "testing-180c7",
-    storageBucket: "testing-180c7.appspot.com",
-    messagingSenderId: "575659151576",
-    appId: "1:575659151576:web:94df5c532d9622ed2687ad",
-    measurementId: "G-78CKP7GKXL"
-  };
-
-  const app = initializeApp(firebaseConfig);
-
-  const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication }) => {
-    return (
-      <View style={styles.authContainer}>
-         <Text style={styles.title}>{isLogin ? 'Sign In' : 'Sign Up'}</Text>
-  
-         <TextInput
-          style={styles.input}
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Email"
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.input}
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Password"
-          secureTextEntry
-        />
-        <View style={styles.buttonContainer}>
-          <Button title={isLogin ? 'Sign In' : 'Sign Up'} onPress={handleAuthentication} color="#3498db" />
-        </View>
-  
-        <View style={styles.bottomContainer}>
-          <Text style={styles.toggleText} onPress={() => setIsLogin(!isLogin)}>
-            {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
+const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication, handlePasswordReset }) => {
+  return (
+    <View style={styles.authContainer}>
+      <Text style={styles.title}>{isLogin ? 'Sign In' : 'Sign Up'}</Text>
+      <TextInput
+        style={styles.input}
+        value={email}
+        onChangeText={setEmail}
+        placeholder="Email"
+        autoCapitalize="none"
+      />
+      <TextInput
+        style={styles.input}
+        value={password}
+        onChangeText={setPassword}
+        placeholder="Password"
+        secureTextEntry
+      />
+      <View style={styles.buttonContainer}>
+        <Button title={isLogin ? 'Sign In' : 'Sign Up'} onPress={handleAuthentication} color="#3498db" />
+      </View>
+      {isLogin && (
+        <View style={styles.forgotPasswordContainer}>
+          <Text style={styles.forgotPasswordText} onPress={handlePasswordReset}>
+            Forgot Password? (Key in your Email in the text field above)
           </Text>
         </View>
+      )}
+      <View style={styles.bottomContainer}>
+        <Text style={styles.toggleText} onPress={() => setIsLogin(!isLogin)}>
+          {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
+        </Text>
       </View>
-    );
-  }
-  
-  
-  
-  const AuthenticatedScreen = ({ user, handleAuthentication }) => {
-    const navigation = useNavigation();
+    </View>
+  );
+};
 
-    // Navigate to homepage when user is authenticated
-    const homepage_handlePress = () => {
+const AuthenticatedScreen = ({ user, handleAuthentication }) => {
+  const navigation = useNavigation();
+
+  const homepage_handlePress = () => {
     navigation.navigate('Homepage');
-    };
-
-    return (
-      <View>
-        <Homepage/>
-         {/* <Text style={styles.title}>Welcome</Text>
-         <Text style={styles.emailText}>{user.email}</Text>
-         <Button title="Logout" onPress={handleAuthentication} color="#e74c3c" />
-         <Button title="Homepage" onPress={homepage_handlePress} color = "rgb(50, 180, 130)"/> */}
-      </View>
-            
-    );
   };
 
-  
-  export default App = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [user, setUser] = useState(null); // Track user authentication state
-    const [isLogin, setIsLogin] = useState(true);
-  
-    const auth = getAuth(app);
-    useEffect(() => {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        setUser(user);
-      });
-  
-      return () => unsubscribe();
-    }, [auth]);
-  
-    
-    const handleAuthentication = async () => {
-      try {
-        if (user) {
-          // If user is already authenticated, log out
-          console.log('User logged out successfully!');
-          await signOut(auth);
+  const handlePasswordReset = async () => {
+    try {
+      await sendPasswordResetEmail(auth, user.email);
+      Alert.alert('Password Reset', 'An email has been sent to reset your password.');
+    } catch (error) {
+      console.error('Password reset error:', error.message);
+      Alert.alert('Error', error.message);
+    }
+  };
+
+  return (
+    <View>
+      <Text style={styles.emailText}>{user.email}</Text>
+      <Button title="Logout" onPress={handleAuthentication} color="#e74c3c" />
+      <Button title="Homepage" onPress={homepage_handlePress} color="rgb(50, 180, 130)" />
+      <Button title="Change Password" onPress={handlePasswordReset} color="#3498db" />
+    </View>
+  );
+};
+
+const App = () => {
+  const { auth, email, setEmail, password, setPassword, loginCheck, setLoginCheck } = useAuth();
+  const [user, setUser] = useState(null);
+  const [isLogin, setIsLogin] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleAuthentication = async () => {
+    try {
+      if (user) {
+        console.log('User logged out successfully!');
+        await signOut(auth);
+      } else {
+        if (isLogin) {
+          await signInWithEmailAndPassword(auth, email, password);
+          console.log('User signed in successfully!');
+          setLoginCheck(true);
         } else {
-          // Sign in or sign up
-          if (isLogin) {
-            // Sign in
-            await signInWithEmailAndPassword(auth, email, password);
-            console.log('User signed in successfully!');
-          } else {
-            // Sign up
-            await createUserWithEmailAndPassword(auth, email, password);
-            console.log('User created successfully!');
-          }
+          await createUserWithEmailAndPassword(auth, email, password);
+          console.log('User created successfully!');
         }
-      } catch (error) {
-        console.error('Authentication error:', error.message);
       }
-    };
-  
-    return (
-      <ScrollView contentContainerStyle={styles.container}>
-        {user ? (
-          // Show user's email if user is authenticated
-          <AuthenticatedScreen user={user} handleAuthentication={handleAuthentication} />
-        ) : (
-          // Show sign-in or sign-up form if user is not authenticated
-          <AuthScreen
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            isLogin={isLogin}
-            setIsLogin={setIsLogin}
-            handleAuthentication={handleAuthentication}
-          />
-        )}
-      </ScrollView>
-    );
-  }
-  const styles = StyleSheet.create({
-    container: {
-      flexGrow: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: 0,
-      backgroundColor: '#f0f0f0',
-    },
-    authContainer: {
-      width: '80%',
-      maxWidth: 400,
-      backgroundColor: '#fff',
-      padding: 20,
-      borderRadius: 8,
-      elevation: 3,
-    },
-    title: {
-      fontSize: 24,
-      marginBottom: 16,
-      textAlign: 'center',
-    },
-    input: {
-      height: 40,
-      borderColor: '#ddd',
-      borderWidth: 1,
-      marginBottom: 16,
-      padding: 8,
-      borderRadius: 4,
-    },
-    buttonContainer: {
-      marginBottom: 16,
-    },
-    toggleText: {
-      color: '#3498db',
-      textAlign: 'center',
-    },
-    bottomContainer: {
-      marginTop: 20,
-    },
-    emailText: {
-      fontSize: 18,
-      textAlign: 'center',
-      marginBottom: 20,
-    },
- 
+    } catch (error) {
+      console.error('Authentication error:', error.message);
+    }
+  };
 
-  });
+  const handlePasswordReset = async () => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      Alert.alert('Password Reset', 'An email has been sent to reset your password.');
+    } catch (error) {
+      console.error('Password reset error:', error.message);
+      Alert.alert('Error', error.message);
+    }
+  };
 
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      {user ? (
+        <AuthenticatedScreen user={user} handleAuthentication={handleAuthentication} />
+      ) : (
+        <AuthScreen
+          email={email}
+          setEmail={setEmail}
+          password={password}
+          setPassword={setPassword}
+          isLogin={isLogin}
+          setIsLogin={setIsLogin}
+          handleAuthentication={handleAuthentication}
+          handlePasswordReset={handlePasswordReset}
+        />
+      )}
+    </ScrollView>
+  );
+};
 
+const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#f0f0f0',
+  },
+  authContainer: {
+    width: '100%',
+    maxWidth: 400,
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 8,
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  input: {
+    height: 40,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    marginBottom: 16,
+    padding: 8,
+    borderRadius: 4,
+    color: 'black',
+  },
+  buttonContainer: {
+    marginBottom: 16,
+  },
+  toggleText: {
+    color: '#3498db',
+    textAlign: 'center',
+  },
+  bottomContainer: {
+    marginTop: 20,
+  },
+  emailText: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginBottom: 20,
+    color: 'black',
+  },
+  forgotPasswordContainer: {
+    marginBottom: 16,
+  },
+  forgotPasswordText: {
+    color: '#3498db',
+    textAlign: 'center',
+  },
+});
 
-
-
-
-//Original Version as of 10th June 2024 
-// const SignInScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication }) => {
-     
-//     const {height} = useWindowDimensions();
-//     const navigation = useNavigation();
-//     const {control,handleSubmit, formState: {errors}} = useForm();
-
-//     // const loginUser = async (username: string, password: string) => {
-//     //     try {
-//     //         const response = await firebase.auth().signInWithEmailAndPassword(username, password);
-//     //         console.log(response);
-//     //     } catch (error) {
-//     //         console.log(error);
-//     //     }
-
-//     // }
-
-
-//     // const LoginUser2 = (username: string, password: string) => {
-//     //     auth().createUserWithEmailAndPassword("Email", "Password").then(() => {
-//     //         Alert.alert('User created successfully!');
-//     //     })
-//     //     .catch((err) => {
-//     //         console.log(err)
-//     //     })
-//     // }
-
-//     console.log(errors);
-//     const onSignInPressed = (data: any) => {
-//         //validate user
-//         console.log(data);
-//         navigation.navigate("Homepage");
-//     };
-
-//     const onForgotPasswordPressed = () => {
-//        navigation.navigate('ForgotPassword');         // navigate to forgot password screen
-//     }
-
-//     const onSignInFacebook = () => {
-//         console.warn('Sign In with Facebook');
-//     }
-//     const onSignInGoogle = () => {
-//         console.warn('Sign In with Google');
-//     }
-//     const onSignInApple = () => {
-//         console.warn('Sign In with Apple');
-//     }
-    
-//     const onSignupPressed = () => {
-//         navigation.navigate('SignUp');           //navigate to Sign up screen
-//     }
-//   return (
-//     <ScrollView>
-//         <Text style = {styles.title}>{isLogin ? 'Login' : 'Sign Up'}</Text>
-
-//     <View style = {styles.root}>
-//       <Text style = {styles.title}>Welcome to F2K</Text>
-//       <Image source={logo} style={[styles.logo, {height: height * 0.3}]} resizeMode='contain' />
-//       <Text style = {styles.welcome}> Ready to start your day?</Text>
-//       <CustomInput 
-//         name = "username"
-//         placeholder="Username"
-//         control = {control}
-//         rules = {{required: 'Username is required'}}
-//         />
-
-//       <CustomInput 
-//         name = "password"
-//         placeholder="Password" 
-//         control =  {control}
-//         secureTextEntry= {true}
-//         rules = {{required: 'Password is required', minLength : {value: 3, message: 'Password should be at least 6 characters'}}}
-//       />
-
-    
-      
-
-//       <CustomButton text="Sign In" onPress={handleSubmit(onSignInPressed) } />
-
-//       <CustomButton 
-//       text="Forgot Password?" 
-//       onPress={onForgotPasswordPressed}
-//       type = "TERTIARY"
-//       />
-
-// <CustomButton text="Sign In with Facebook" 
-// onPress={onSignInFacebook}
-// bgColor="#E7EAF4"
-// fgColor={"#4765A9"}
-// />
-// <CustomButton 
-// text="Sign In with Google" 
-// onPress={onSignInGoogle}
-// bgColor={"#FAE9EA"}
-// fgColor={"#DD4B39"}
-// />
-// <CustomButton 
-// text="Sign In with Apple" 
-// onPress={onSignInApple}
-// bgColor={"#e3e3e3"}
-// fgColor={"#363636"}
-// />
-// <CustomButton 
-// text="Dont't have an account? Create one!" 
-// onPress={onSignupPressed}
-// type = "TERTIARY"
-// />
-// </View>
-//  </ScrollView> 
-    
-//   );
-// };
-
-// export default SignInScreen;
-
-
-// const styles = StyleSheet.create({
-//     root: {
-//         alignItems: 'center',
-//         padding: 20,
-        
-//     },
-//     logo: {
-//         width:'100%',
-//         maxWidth :400,
-//         maxHeight: 200,
-//         backgroundColor: 'peachpuff',
-//     },
-//     title: {
-//         fontSize: 24,
-//         fontWeight: 'bold',
-//         color: '#051C60',
-//         margin: 10,
-//     },
-//     welcome:{
-//         color: 'black',
-//         fontSize: 35,
-//         fontWeight: 'bold',
-//     },
-//     authContainer: {
-//         width: '80%',
-//         maxWidth: 400,
-//         backgroundColor: '#fff',
-//         padding: 16,
-//         borderRadius: 8,
-//         elevation: 3,
-//     },
-
-    
-// });
+export default App;

@@ -78,6 +78,7 @@ const Map = () => {
       </MapView>
       <View style={styles.searchBox}>
         <TextInput 
+            value = {searchText}
             style={styles.searchField}
             placeholder="Search here"
             onChangeText={setSearchText}
@@ -85,7 +86,7 @@ const Map = () => {
         <TouchableOpacity
             onPress={searchPlaces}
         >
-            <Text>Search place</Text>
+            <Text style={styles.text}>Search place</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -107,10 +108,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgreen',
     alignItems: 'center',
   },
+  text:{
+    color: 'black',
+  },
   searchField:{
     backgroundColor: 'white',
     borderWidth:1,
     borderRadius:10,
+    color: 'black',
   }
 });
 

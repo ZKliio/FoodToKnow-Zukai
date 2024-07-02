@@ -33,10 +33,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Homepage from '../home/Homepage';
 import HomepageButtons from '../home/HomepageButtons';
 import MealPlanner from '../meal_planner/Meal_planner';
+import SearchBar from '../food_info/searchbar';
 import FoodInfo from '../food_info/Food_info';
 import FoodFinder from '../food_finder/Food_Finder';
 import Profile from '../settings/Profile';
 import { AuthProvider } from '../../AuthContext';
+import { FoodProvider } from '../../FoodContext';
+// import { SearchBar } from 'react-native-screens';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -47,7 +50,13 @@ export type RootStackParamList = {
     ForgotPassword: undefined;
     NewPassword: undefined;
   };
-const LoginScreen = () => {
+type Props = {
+  route: {
+    params: any;
+  };
+};
+
+const LoginScreen = () => { //{ route }: Props
 
     //     //handle user state changes
     //     const [initializing, setInitializing] = useState(true);
@@ -80,14 +89,16 @@ const LoginScreen = () => {
       
     
     return (  //the independent = {true} helps to account for nested navigation\
-        <AuthProvider>
+        
+  
         <NavigationContainer independent={true}>    
             <Stack.Navigator  initialRouteName="SignIn" >
                 <Stack.Screen name="SignIn" component={SignInScreen} options = {{headerShown: false}}/>
                 <Stack.Screen name="Homepage" component = {Homepage} options = {{headerShown: false}}/>
               
-                <Stack.Screen name="MealPlanner" component={MealPlanner} />
-                <Stack.Screen name="FoodInfo" component={FoodInfo} />
+                <Stack.Screen name="MealPlanner" component={MealPlanner}  /> 
+                {/* initialParams={"hello"} */}
+                <Stack.Screen name="FoodInfo" component={SearchBar} />
                 <Stack.Screen name="FoodFinder" component={FoodFinder} />
                 <Stack.Screen name="Profile" component={Profile} /> 
               
@@ -97,8 +108,8 @@ const LoginScreen = () => {
                 <Stack.Screen name="NewPassword" component={NewPasswordScreen} />
             </Stack.Navigator>
         </NavigationContainer>
-        </AuthProvider>
+
+        
     )
 };
-
 export default LoginScreen;

@@ -25,7 +25,8 @@ import React, { useCallback, useEffect, useState, useContext} from "react";
 // const { useQuery, useRealm } = RealmContext
 import { useFocusEffect } from "@react-navigation/native";
 import {FoodType} from "../../FoodContext.js";
-import {SERVER_URL} from "../../enviroment";
+import {SERVER_URL} from "../../environment.js";
+import { ScreenHeight } from 'react-native-elements/dist/helpers/index.js';
 const FoodInfo = () => {
   
    // const fetchFood = async () => {
@@ -38,69 +39,69 @@ const FoodInfo = () => {
     //   }
     // };
   // const searchText = searchText;
-  const { foodId, setFoodId } = useContext(FoodType);
-  const [filterCondition, setFilterCondition] = useState('');
+  // const { foodId, setFoodId } = useContext(FoodType);
+  // const [filterCondition, setFilterCondition] = useState('');
 
-  interface Food {
-    _id: string;
-    name: string;
-    calories: number;
-    protein: number;
-    carbs: number;
-    fat: number;
-  }
+  // interface Food {
+    // _id: string;
+    // name: string;
+    // calories: number;
+    // protein: number;
+    // carbs: number;
+    // fat: number;
+  // }
   
-  const [foods, setFoods] = useState<Food[]>([]);
-    useEffect(() => {
-      fetchFood();
-    }, [filterCondition]);
+  // const [foods, setFoods] = useState<Food[]>([]);
+  //   useEffect(() => {
+  //     fetchFood();
+  //   }, [filterCondition]);
     
-    useFocusEffect(
-      useCallback(() => {
-        fetchFood();
-      }, [])
-    );
+  //   useFocusEffect(
+  //     useCallback(() => {
+  //       fetchFood();
+  //     }, [])
+  //   );
     
-  useEffect(() => {
-    fetchFood();
-  }, [filterCondition]);
+  // useEffect(() => {
+  //   fetchFood();
+  // }, [filterCondition]);
    
     const fetchFood = async () => {
-
-        axios
-        .get(`${SERVER_URL}/foodInfo`, { // 'http://10.0.2.2:3000/foodInfo' 
-          params: { foodSearched: filterCondition },
-        })
-        .then(  response => {
-        //console.log(response.data)
-
-        console.log("Food info fetched successfully");
-        //const foods = response.data
-        setFoods(response.data);
+  
+      //   axios
+      //   .get( `${SERVER_URL}/foodInfo`, { //  'http://10.0.2.2:3000/foodInfo'
+      //     params: { foodSearched: filterCondition },
+      //   })
+      //   .then(  response => {
+      //   //console.log(response.data)
+      //   setFoods(response.data);
+      //   console.log("Food info fetched successfully");
+      //   //const foods = response.data
+        
    
-        }).catch(error => {
-        if (error.response) {
-          // The server responded with a status code outside the 2xx range
-          console.log('Error response:', error.response);
-        } else if (error.request) {
-          // The request was made but no response was received
-          console.log('Error request:', error.request);
-        } else {
-          // Something happened in setting up the request that triggered an error
-          console.log('Error message:', error.message);
-        }
-      });
+      //   }).catch(error => {
+      //   if (error.response) {
+      //     // The server responded with a status code outside the 2xx range
+      //     console.log('Error response:', error.response);
+      //   } else if (error.request) {
+      //     // The request was made but no response was received
+      //     console.log('Error request:', error.request);
+      //   } else {
+      //     // Something happened in setting up the request that triggered an error
+      //     console.log('Error message:', error.message);
+      //   }
+      // });
       
     };
   
   return (
-    <View style={styles.background}>
+    <SafeAreaView style={styles.background}>
       
-      
+      <View style={styles.header}>
       <Text style={styles.text}>Food Info</Text>
-      
-      <Searchbar />
-      <View style={styles.buttonRow}>
+      </View>
+
+      {/* <View style={styles.buttonRow}>
         <TouchableOpacity style={styles.searchButton} onPress={fetchFood}>
           <Text style={styles.searchText}>Refresh</Text>
         </TouchableOpacity>
@@ -108,7 +109,12 @@ const FoodInfo = () => {
         <TouchableOpacity style={styles.searchButton} onPress={fetchFood}>
           <Text style={styles.searchText}>Search</Text>
         </TouchableOpacity>
+      </View> */}
+
+      <View style={styles.searchBar}>
+        <Searchbar item={undefined}/>
       </View>
+      
 
       {/* <View style={styles.listContainer}>
         <FlatList
@@ -123,7 +129,7 @@ const FoodInfo = () => {
           )}
         />
       </View> */}
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -137,31 +143,34 @@ const styles = StyleSheet.create({
       backgroundColor: 'rgb(245,234,206)',
       alignItems: 'center',
     },
-
+    header: {
+      flex: 0.1,
+      padding: 0,
+    },
     text: {
       color: 'black',
-      fontSize: 20,
+      fontSize: 30,
       fontWeight: 'bold',
+      fontFamily: 'serif',
       backgroundColor: 'transparent',
-      margin: 90,
-      justifyContent: 'flex-start',
+      margin: 20,
+      justifyContent: 'center',
     },
 
     buttonRow: {
+      flex: 0.1,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      marginTop: 30,
+      marginTop: 1,
       width: '100%',
     },
 
-    searchBarContainer: {
-      backgroundColor: 'transparent',
+    searchBar: {
+      flex: 0.8,
       padding: 0,
-      flex: 1,
       marginTop: 10,
-      alignItems: 'center',
-      justifyContent: 'center',
+      
     },
 
     searchButton: {

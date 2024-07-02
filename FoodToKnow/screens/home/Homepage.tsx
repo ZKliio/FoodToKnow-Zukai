@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
 import { useState } from 'react';
 import type {PropsWithChildren} from 'react';
@@ -13,6 +6,7 @@ import{
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+
 
 import {
   SafeAreaView,
@@ -30,11 +24,17 @@ import {
 
 import Searchbar from "../food_info/searchbar";
 import ImageButton from "./HomepageButtons"
-import { useNavigation } from '@react-navigation/native';
+import { Link, useNavigation } from '@react-navigation/native';
+import BMICalculator from './BMICalculator';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { SvgUri } from 'react-native-svg';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import AppNavigation from '../../components/NavigationTab';
 
 
 const Homepage = () => {
   const navigation = useNavigation()  
+
   const streakCount = 5;
     
     if (streakCount <= 3){
@@ -42,7 +42,9 @@ const Homepage = () => {
     return (
       
       <View style ={styles.background}>
+        <SafeAreaView>
         <View style = {styles.headerContainer}> 
+          <BMICalculator/>
 
           <Text style = {styles.headerText}>
             Day {streakCount}
@@ -57,12 +59,15 @@ const Homepage = () => {
           <Text style = {styles.subheaderText}>
           What would you like to do today? 😇
           </Text>
+          
         </View>
-        <ImageButton/>
+        {/* <ImageButton/> */}
 
-        <View>
+          <View>
         </View>
-
+        <StatusBar barStyle="dark-content" />
+        <AppNavigation />
+        </SafeAreaView>
       </View>
       
 
@@ -70,7 +75,7 @@ const Homepage = () => {
     else{
       return (
         <View style={styles.background}>
-          <View style={styles.headerContainer}>
+          {/* <View style={styles.headerContainer}>
             <Text style={styles.headerText}>Day {streakCount}</Text>
 
             <Text style={styles.subheaderText}>You're on a streak!🔥🔥😤</Text>
@@ -80,10 +85,11 @@ const Homepage = () => {
             <Text style={styles.contentText}>
               What would you like to do today? 😇
             </Text>
-          </View>
-          <ImageButton />
+          </View> */}
+          {/* <ImageButton /> */}
 
-          <View></View>
+          <StatusBar barStyle="dark-content" />
+          <AppNavigation />
         </View>
       );
     }
@@ -105,16 +111,16 @@ const Homepage = () => {
     },
 
     headerContainer: {
-      flex: 0.20,
+      flex: 0,
       marginBottom: 5,
-      padding: 30,
+      padding: 10,
       backgroundColor: 'rgb(255, 230, 0)', // yellow
       // flexWrap: 'nowrap',
       // flexShrink: 1,
     },
     
     contentContainer:{
-      flex: 0.15,
+      flex: 0,
       marginTop: 0,
       alignItems: 'center',
       justifyContent: 'center',
@@ -125,10 +131,10 @@ const Homepage = () => {
 
     headerText:{
       color: 'black',
-      fontSize: 45,
+      fontSize: 30,
       fontWeight: 'bold',
       padding: 0,
-      marginBottom: 20,
+      marginBottom: 10,
       
     },
 
@@ -137,20 +143,23 @@ const Homepage = () => {
       // fontSize: 30,
       fontWeight: 'bold',
       padding: 0,
+      fontSize: 20,
       // flexShrink:1
       // fontSize:hp('3%')
-      fontSize:RFValue(23),
+      // fontSize:RFValue(18),
     },
     contentText:{
       color: 'black',
-      fontSize: 25,
+      fontSize: 20,
       fontWeight: 'bold',
       padding: 0,
-    }
+    },
+    
+    container : {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginBottom: 5,
+    },
       
     });
-
-
-
-
-

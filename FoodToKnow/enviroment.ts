@@ -1,1 +1,1 @@
-export const SERVER_URL = 'https://d89e-115-66-4-88.ngrok-free.app'
+export const SERVER_URL = 'https://tomcat-proud-spaniel.ngrok-free.app'

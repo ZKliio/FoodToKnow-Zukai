@@ -73,9 +73,9 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 // import React from 'react';
 // import {RealmProvider} from '@realm/react';
 import {Profiles} from './schemas/Profiles';
-import { FoodContext } from './FoodContext.js';
-import { MealContext } from './MealContext.js';
-import LoginScreen from './screens/login/LoginScreen.tsx';
+import { FoodProvider } from './FoodContext.js';
+import { AuthProvider } from './AuthContext';
+import LoginScreen from './screens/login/UserStack.tsx';
 
 function App() {
   type Stack = {
@@ -87,18 +87,14 @@ function App() {
   
 
   return (
-    <MealContext>
-    <FoodContext>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="LoginScreen" component={LoginScreen} options = {{headerShown: false}} />
-
-        </Stack.Navigator>
+    <AuthProvider>
+      <FoodProvider>
     
 
-      </NavigationContainer>
-    </FoodContext>
-    </MealContext>
+        <LoginScreen />
+    
+      </FoodProvider>
+    </AuthProvider>
 
   );
 }

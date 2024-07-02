@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 
 import MyCalendar from '../meal_planner/calendar';
+import Test from '../meal_planner/test';
 import {Calendar, CalendarList, Agenda, LocaleConfig} from 'react-native-calendars';
 
 const Profile = () => {
@@ -24,6 +25,7 @@ const Profile = () => {
        <View > 
         {/* <Text style = {styles.text}>Account Settings</Text> */}
       <MyCalendar/>
+      {/* <Test/> */}
     </View>
     
 )};

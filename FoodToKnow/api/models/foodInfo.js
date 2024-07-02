@@ -10,6 +10,10 @@ const foodSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    count:{
+        type: Number,
+        required: true,
+    }
     //whatever other fields you need
 });
 
