@@ -34,7 +34,7 @@ const Map = () => {
      "https://maps.googleapis.com/maps/api/place/textsearch/json";
     const input = searchText.trim()
     const location= `${INITIAL_LAT},${INITIAL_LONG}&radius=100}`
-    const url = `${googleApisURL}?query=${input}&location=${location}&key=AIzaSyD9DwrtnEzFUjsOgZIMcdBrT0M-iTKgLsA`
+    const url = `${googleApisURL}?query=${input}&location=${location}&key=${GOOGLE_API_KEY}`
     try{
         const response= await fetch(url)
         const json = await response.json()

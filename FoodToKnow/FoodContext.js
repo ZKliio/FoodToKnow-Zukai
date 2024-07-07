@@ -118,11 +118,14 @@ const saveMeals = async () => {
     };
 
     if (!existingMeals) {
+      
       console.log('Creating new meals document for user:', userID, mealData);
-      await axios.post(`${SERVER_URL}/meals/${userID}`, mealData);
+      await axios.post(`${SERVER_URL}/meals/${userID}/${formattedDate}`, mealData, formattedDate);
     } else {
+      console.log(existingMeals)
+      console.log(`meal data: ${JSON.stringify(mealData)}`)
       console.log('Updating meals document for user:', userID);
-      await axios.put(`${SERVER_URL}/meals/${userID}`, mealData);
+      await axios.put(`${SERVER_URL}/meals/${userID}/${formattedDate}`, mealData, formattedDate);
     }
 
     alert('Meals saved successfully!');
@@ -259,13 +262,8 @@ const saveMeals = async () => {
   const totalCalories = breakfastCalories + lunchCalories + dinnerCalories;
 
   const calculateTotalProteins = (items) => {
-    return items.reduce((total, item) => {
-      const proteins = parseFloat(item.proteins) || 0; // Ensure proteins is a number
-      const count = parseFloat(item.count) || 0; // Ensure count is a number
-      return total + (proteins * count);
-    }, 0);
+    return items.reduce((total, item) => total + (item.protein * item.count), 0);
   };
-  
   const breakfastProteins = calculateTotalProteins(selectedFoods);
   const lunchProteins = calculateTotalProteins(selectedLunches);
   const dinnerProteins = calculateTotalProteins(selectedDinners);
