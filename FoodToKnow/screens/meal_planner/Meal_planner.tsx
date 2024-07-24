@@ -352,6 +352,7 @@ import { useAuth } from '../../AuthContext'; //allows me to use email and passwo
 import { useContext } from 'react';
 import { FoodContext } from '../../FoodContext';
 import DatePicker from './calendar';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const MealPlanner = ({mealTiming}) => { //
   const [meals, setMeals] = useState([]);
@@ -471,6 +472,7 @@ const MealPlanner = ({mealTiming}) => { //
       <View style={styles.actions}>
         <Button onPress={() => deleteFood(item._id)}>Delete</Button>
       </View>
+      {/* <View style={{borderBottomColor: 'black', borderBottomWidth: StyleSheet.hairlineWidth, }} />    */}
     </View>
     
   );
@@ -501,23 +503,35 @@ const MealPlanner = ({mealTiming}) => { //
   
   return (
     <ScrollView>
-      
-      <View style={styles.breakfastcontainer}>
-      <Text style={styles.breakfastHeader}>Select Date to Fetch Meals</Text>
-      <DatePicker />
-      <View style={styles.container}>
-      <Text style={styles.counterTextTotal}>Total Calories: {totalCalories}</Text>
-      {/* <Text style={styles.counterTextTotal}>Total Proteins: {totalProteins}</Text> */}
-      <Text style={styles.counterText}>Calories: {breakfastCalories}</Text>
-      {/* <Text style={styles.counterText}>Proteins: {breakfastProteins}</Text> */}
+       <DatePicker />
+      {/* <View style={styles.breakfastcontainer}> */}
+      <View style={styles.refreshSaveContainer}>
       <Button                 // Refresh query to meals dB
         onPress={fetchMeals}
         style={styles.button}>
           Refresh
       </Button>
+      <Button onPress={saveMeals} style={styles.button}>Save Meals</Button>
       </View>
-      <Text style={styles.breakfastHeader}>Breakfast</Text>
       <View style={styles.container}>
+      <Text style={styles.counterTextTotal}>Total Calories: {totalCalories}</Text>
+      <Text style={styles.counterTextTotal}>Total Proteins: {totalProteins}</Text>
+      
+      
+      </View>
+
+      <View style={styles.container}>
+      <Text style={styles.breakfastHeader}>Breakfast</Text>
+      <TouchableOpacity onPress={addDetails} style={styles.addButton}>
+            <Icon name="plus" size={20} color="rgb(100, 170, 255)" />
+      </TouchableOpacity>
+      </View>
+      <Text style={styles.counterText}>Calories: {breakfastCalories}</Text>
+      <Text style={styles.counterText}>Proteins: {breakfastProteins}</Text>
+      <View style={styles.container}>
+
+
+
       {/* <TextInput
         label="Meal Name"
         value={mealName}
@@ -530,12 +544,8 @@ const MealPlanner = ({mealTiming}) => { //
         onChangeText={setMealDetails}
         style={styles.input}
       /> */}
-      <Button onPress={saveMeals} style={styles.button}>Save Meals</Button>
-      <Button             //// Add details from foodInfo
-        onPress={addDetails}
-        style={styles.button}>
-          Add details
-      </Button>
+ 
+     
 
       {/* <TextInput
         label="Health Condition"
@@ -566,13 +576,19 @@ const MealPlanner = ({mealTiming}) => { //
     
       />
     </View>
-    </View> 
+    <View style={{borderBottomColor: 'black', borderBottomWidth: StyleSheet.hairlineWidth, }} />   
+    {/* </View>  */}
     {/* end of breakfastcontainer */}
 
-    <View style={styles.breakfastcontainer}>
+
+      <View style={styles.container}>
       <Text style={styles.breakfastHeader}>Lunch</Text>
+      <TouchableOpacity onPress={addDetails} style={styles.addButton}>
+            <Icon name="plus" size={20} color="rgb(100, 170, 255)" />
+      </TouchableOpacity>
+      </View>
       <Text style={styles.counterText}>Calories: {lunchCalories}</Text>
-      {/* <Text style={styles.counterText}>Proteins: {lunchProteins}</Text> */}
+      <Text style={styles.counterText}>Proteins: {lunchProteins}</Text>
 
       <View style={styles.container}>
       
@@ -583,11 +599,11 @@ const MealPlanner = ({mealTiming}) => { //
         style={styles.input}
       /> */}
 
-      <Button             //// Add details from foodInfo
+      {/* <Button             //// Add details from foodInfo
         onPress={addDetails}
         style={styles.button}>
           Add details
-      </Button>
+      </Button> */}
 
       {/* <TextInput
         label="Health Condition"
@@ -612,44 +628,27 @@ const MealPlanner = ({mealTiming}) => { //
     
       />
     </View>
-    </View> 
     {/* end of lunchcontainer */}
 
-    <View style={styles.breakfastcontainer}>
+   
+      <View style={styles.container}>
       <Text style={styles.breakfastHeader}>Dinner</Text>
+        <TouchableOpacity onPress={addDetails} style={styles.addButton}>
+            <Icon name="plus" size={20} color="rgb(100, 170, 255)" />
+        </TouchableOpacity>
+      </View>
       <Text style={styles.counterText}>Calories: {dinnerCalories}</Text>
-      {/* <Text style={styles.counterText}>Proteins: {dinnerProteins}</Text> */}
+      <Text style={styles.counterText}>Proteins: {dinnerProteins}</Text>
       <View style={styles.container}>
       
-      {/* <TextInput                  //// Replace Meal details with a navigate to FoodInfo
-        label="Meal Details"
-        value={mealDetails}
-        onChangeText={setMealDetails}
-        style={styles.input}
-      /> */}
+  
 
-      <Button             //// Add details from foodInfo
+      {/* <Button             //// Add details from foodInfo
         onPress={addDetails}
         style={styles.button}>
           Add details
-      </Button>
-
-      {/* <TextInput
-        label="Health Condition"
-        value={healthCondition}
-        onChangeText={setHealthCondition}
-        style={styles.input}
-      /> */}
-
-      {/* <TextInput
-        label="Filter by Health Condition"
-        value={filterCondition}
-        onChangeText={setFilterCondition}
-        style={styles.input}
-      /> */}
-      {/* <Button mode="contained" onPress={fetchMeals} style={styles.button}>
-        Filter Meals
       </Button> */}
+
       <FlatList
         data= {selectedDinners}
         keyExtractor={(item, index) => index.toString()}
@@ -657,7 +656,7 @@ const MealPlanner = ({mealTiming}) => { //
     
       />
     </View>
-    </View> 
+   
     {/* end of dinnercontainer */}
     </ScrollView>
   );
@@ -679,9 +678,29 @@ const MealsPlanner = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 2,
+    flexDirection: 'row',
+    padding: 10,
+    // backgroundColor: 'blue',
     backgroundColor: '#fff',
     alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  refreshSaveContainer:{
+    flex: 1,
+    flexDirection: 'row',
+    padding: 0,
+    // backgroundColor: 'blue',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  headerContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    // alignItems: 'center',
+    justifyContent: 'space-between',
+    // backgroundColor: 'rgb(255, 230, 0)',
+    backgroundColor: '#fff',
   },
   breakfastcontainer: {
     flex: 1,
@@ -689,12 +708,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   breakfastHeader: {
-    fontSize: 20,
+    fontSize: 25,
     color: 'black',
     fontWeight: 'bold',
+    backgroundColor: 'white',
   },
   counterTextTotal:{
-    fontSize: 20, // font size of the text
+    fontSize: 15, // font size of the text
     color: 'black',
     fontWeight: 'bold',
   },
@@ -710,10 +730,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
+  addButton: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    
+  },
   item: {
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    backgroundColor: 'white',
   },
   title: {
     fontSize: 20,

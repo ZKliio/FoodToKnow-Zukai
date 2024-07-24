@@ -29,6 +29,7 @@ import BMICalculator from './BMICalculator';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SvgUri } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import UserStack from '../../screens/login/UserStack';
 import AppNavigation from '../../components/NavigationTab';
 
 
@@ -66,7 +67,7 @@ const Homepage = () => {
           <View>
         </View>
         <StatusBar barStyle="dark-content" />
-        <AppNavigation />
+        {/* <AppNavigation /> */}
         </SafeAreaView>
       </View>
       

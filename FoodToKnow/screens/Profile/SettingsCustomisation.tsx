@@ -9,17 +9,37 @@ import {
   onAuthStateChanged, 
   signOut, 
   sendPasswordResetEmail } from 'firebase/auth';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions, StackActions } from '@react-navigation/native';
+import EditProfile from './EditProfile';
+
 
 const SettingsCustomisation = () => {
     const navigation = useNavigation();
     const {auth, email, setEmail} = useAuth();
+
     const handleLogout = async () => {
         try {
         await signOut(auth);
-        navigation.navigate('UserStack', {
-        screen: 'SignIn',
-        }); // Assuming you have a Login screen in your navigator
+        // navigation.navigate('ProfileStack', { screen: 'SignInScreen' });
+        // navigation.navigate('UserStack', { screen: 'SignIn' });
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [{ name: 'SignIn' }],
+            })
+        );
+        // navigation.dispatch(
+        //   CommonActions.reset({
+        //     index: 0,
+        //     routes: [{ name: 'App' }],
+        //   })
+        // );
+        // navigation.dispatch(
+        //   CommonActions.reset({
+        //     index: 0,
+        //     routes: [{ name: 'Stack' }],
+        //   })
+        // );
         } catch (error) {
         console.error('Error signing out: ', error);
         }
@@ -37,7 +57,10 @@ const SettingsCustomisation = () => {
       <Text style={styles.sectionTitle}>Health Goals</Text>
       <Text style={styles.sectionContent}>Maintain Weight</Text>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ProfileStack', {
+        screen: 'EditProfile',
+        })
+        }>
         <Text style={styles.buttonText}>Edit Profile</Text>
       </TouchableOpacity>
 

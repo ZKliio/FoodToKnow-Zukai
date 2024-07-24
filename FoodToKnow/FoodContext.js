@@ -35,7 +35,7 @@ export const FoodProvider = ({ children }) => {
         setSelectedDinners(selectedDinners || []);
       } else {
         console.log('No meals found for this date, creating a new entry...');
-        await axios.post(`${SERVER_URL}/meals/${userID}`, {
+        await axios.post(`${SERVER_URL}/meals/${userID}/${formattedDate}`, {
           date: formattedDate,
           selectedFoods: [],
           selectedLunches: [],
@@ -85,7 +85,7 @@ export const FoodProvider = ({ children }) => {
   //   }
   // };
 const saveMeals = async () => {
-  const formattedDate = new Date(Date.now()).toLocaleDateString('en-GB', {
+  const formattedDate = new Date(selectedDate).toLocaleDateString('en-GB', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
@@ -122,8 +122,8 @@ const saveMeals = async () => {
       console.log('Creating new meals document for user:', userID, mealData);
       await axios.post(`${SERVER_URL}/meals/${userID}/${formattedDate}`, mealData, formattedDate);
     } else {
-      console.log(existingMeals)
-      console.log(`meal data: ${JSON.stringify(mealData)}`)
+      // console.log(existingMeals)
+      // console.log(`meal data: ${JSON.stringify(mealData)}`)
       console.log('Updating meals document for user:', userID);
       await axios.put(`${SERVER_URL}/meals/${userID}/${formattedDate}`, mealData, formattedDate);
     }

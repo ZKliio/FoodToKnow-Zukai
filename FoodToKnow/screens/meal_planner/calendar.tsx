@@ -1,7 +1,8 @@
 import React, { useContext, useState } from 'react';
-import { View, Button, Text, Platform, StyleSheet } from 'react-native';
+import { View, Button, TouchableOpacity, Text, Platform, StyleSheet } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { FoodContext } from '../../FoodContext';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const DatePicker = () => {
   const { selectedDate, setSelectedDate } = useContext(FoodContext);
@@ -23,7 +24,11 @@ const DatePicker = () => {
 
   return (
     <View style={styles.container}>
-      <Button onPress={() => setShow(true)} title="Select Date" />
+      <Text style={styles.text}>Date: {formattedDate}</Text>
+      {/* <Button onPress={() => setShow(true)} title="Select Date" /> */}
+      <TouchableOpacity onPress={() => setShow(true)} style={styles.addButton}>
+            <Icon name="calendar" size={20} color="white" />
+      </TouchableOpacity>
       {show && (
         <DateTimePicker
           testID="dateTimePicker"
@@ -32,8 +37,9 @@ const DatePicker = () => {
           display="default"
           onChange={onChange}
         />
+        
       )}
-      <Text style={styles.text}>Selected Date: {formattedDate}</Text>
+      
     </View>
   );
 };
@@ -43,11 +49,22 @@ export default DatePicker;
 const styles = StyleSheet.create({
   container: {
   flex: 1,
-  justifyContent: 'center',
+  flexDirection: 'row',
+  padding: 8,
+  backgroundColor: 'rgb(190, 190, 190)',
+  justifyContent: 'space-between',
   alignItems: 'center',
 },
   text: {
     fontSize: 15,
     color: 'black'
-  }
+  },
+  addButton: {
+    backgroundColor: 'rgb(100, 170, 255)',
+    borderRadius: 10,
+    padding: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    
+  },
 })

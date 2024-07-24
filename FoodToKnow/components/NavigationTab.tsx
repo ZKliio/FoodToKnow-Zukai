@@ -10,28 +10,29 @@ import FoodFinder from '../screens/food_finder/Food_Finder';
 import Profile from '../screens/settings/Profile';
 import SettingsCustomisation from '../screens/Profile/SettingsCustomisation';
 import UserStack from '../screens/login/UserStack';
+import ProfileStack from '../screens/Profile/Profile_Stack';
 
 const Tab = createBottomTabNavigator();
 
 const AppNavigation = () => {
   return (
     <NavigationContainer independent = {true}>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
+      <Tab.Navigator 
+        screenOptions={ ({ route }) => ({
           tabBarIcon: ({ color, size }) => {
             let iconName;
 
             switch (route.name) {
-              case 'Meal Planner':
+              case 'MealPlanner':
                 iconName = 'cutlery';
                 break;
-              case 'Food Info':
+              case 'FoodInfo':
                 iconName = 'book';
                 break;
               case 'BMR Calculator':
                 iconName = 'calculator';
                 break;
-              case 'Food Finder':
+              case 'FoodFinder':
                 iconName = 'search';
                 break;
               case 'Profile':
@@ -44,6 +45,7 @@ const AppNavigation = () => {
 
             return <Icon name={iconName} size={size} color={color} />;
           },
+          headerShown: false
         })}
       >
         <Tab.Screen name="MealPlanner" component={MealPlanner}  />
@@ -51,9 +53,10 @@ const AppNavigation = () => {
         <Tab.Screen name="BMR Calculator" component={BMICalculator} />
         <Tab.Screen name="FoodFinder" component={FoodFinder} />
         <Tab.Screen name="Profile" component={SettingsCustomisation} />
-        <Tab.Screen name="UserStack" component={UserStack} />
+        <Tab.Screen name="ProfileStack" component={ProfileStack} />
+        {/* <Tab.Screen name="UserStack" component={UserStack} /> */}
       </Tab.Navigator>
-    </NavigationContainer>
+     </NavigationContainer>
   );
 };
 

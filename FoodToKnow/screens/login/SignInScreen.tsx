@@ -62,11 +62,11 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
   );
 };
 
-const AuthenticatedScreen = ({ user, handleAuthentication }) => {
+const AuthenticatedScreen = ({ user, handleAuthentication, auth }) => {
   const navigation = useNavigation();
 
   const homepage_handlePress = () => {
-    navigation.navigate('Homepage');
+    navigation.navigate('App'); // Navigate to 'App');
   };
 
   const handlePasswordReset = async () => {
@@ -112,6 +112,8 @@ const App = () => {
           await signInWithEmailAndPassword(auth, email, password);
           console.log('User signed in successfully!');
           setLoginCheck(true);
+          console.log('loginCheck', loginCheck)
+
         } else {
           await createUserWithEmailAndPassword(auth, email, password);
           console.log('User created successfully!');
@@ -135,7 +137,7 @@ const App = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {user ? (
-        <AuthenticatedScreen user={user} handleAuthentication={handleAuthentication} />
+        <AuthenticatedScreen user={user} handleAuthentication={handleAuthentication} auth={auth} />
       ) : (
         <AuthScreen
           email={email}

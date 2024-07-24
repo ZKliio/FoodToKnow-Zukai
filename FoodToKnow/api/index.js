@@ -77,7 +77,7 @@ app.put('/meals/:userId/:date', async (req, res) => {
 });
 
 // Create meals for a specific user (alternative to put)
-app.post('/meals/:userId/:date', async (req, res) => {
+app.post('/meals/:userId', async (req, res) => {
   const { userId } = req.params;
   const { selectedFoods, selectedLunches, selectedDinners, date } = req.body;
 

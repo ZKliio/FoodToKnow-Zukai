@@ -40,6 +40,9 @@ import Profile from '../settings/Profile';
 import { AuthProvider } from '../../AuthContext';
 import { FoodProvider } from '../../FoodContext';
 // import { SearchBar } from 'react-native-screens';
+import AppNavigation from '../../components/NavigationTab';
+import { useAuth } from '../../AuthContext';
+import ProfileNavigator from '../Profile/Profile_Stack';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -56,52 +59,26 @@ type Props = {
   };
 };
 
-const LoginScreen = () => { //{ route }: Props
-
-    //     //handle user state changes
-    //     const [initializing, setInitializing] = useState(true);
-    //     const [user, setUser] = useState();
-    //     function onAuthStateChanged(user: React.SetStateAction<undefined>) {
-    //       setUser(user);
-    //       if(initializing) setInitializing(false);
-    //     }
-    //     useEffect(() => {
-    //       const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
-    //       return subscriber; // unsubscribe on unmount
-    //     }, []);
-    
-    //     if(initializing) return null;
-       
-    //     if(!user){
-    //         return (
-    //             <Stack.Navigator>
-    //                 <Stack.Screen name="SignIn" component={SignInScreen} options = {{headerShown: false}}/>
-    //                 <Stack.Screen name="SignUp" component={SignUpScreen} />
-    //             </Stack.Navigator>
-    //         );
-    //     }
-    //     return (
-    //         <Stack.Navigator>
-    //             <Stack.Screen name="Homepage" component = {Homepage} options = {{headerShown: false}}/>
-    //         </Stack.Navigator>
-    //     );
-    // };   
-      
-    
+const UserStack = () => { //{ route }: Props
+    const {loginCheck, setLoginCheck} = useAuth();
+    // console.log('hi',loginCheck)
     return (  //the independent = {true} helps to account for nested navigation\
         
-  
+      
         <NavigationContainer independent={true}>    
             <Stack.Navigator  initialRouteName="SignIn" >
                 <Stack.Screen name="SignIn" component={SignInScreen} options = {{headerShown: false}}/>
-                <Stack.Screen name="Homepage" component = {Homepage} options = {{headerShown: false}}/>
+                {/* <Stack.Screen name="Homepage" component = {Homepage} options = {{headerShown: false}}/> */}
               
-                <Stack.Screen name="MealPlanner" component={MealPlanner}  /> 
-                {/* initialParams={"hello"} */}
+
+                <Stack.Screen name="App" component={AppNavigation} options={{ headerShown: false}}/>
+
+                {/* <Stack.Screen name="MealPlanner" component={MealPlanner}  /> 
                 <Stack.Screen name="FoodInfo" component={SearchBar} />
                 <Stack.Screen name="FoodFinder" component={FoodFinder} />
                 <Stack.Screen name="Profile" component={Profile} /> 
-              
+               */}
+                {/* <Stack.Screen name="ProfileStack" component={ProfileNavigator} /> */}
                 <Stack.Screen name="SignUp" component={SignUpScreen} />
                 <Stack.Screen name="ConfirmEmail" component={ConfirmEmailScreen} />
                 <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
@@ -112,4 +89,4 @@ const LoginScreen = () => { //{ route }: Props
         
     )
 };
-export default LoginScreen;
+export default UserStack;

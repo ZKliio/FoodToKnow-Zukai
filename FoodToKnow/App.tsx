@@ -75,7 +75,8 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 import {Profiles} from './schemas/Profiles';
 import { FoodProvider } from './FoodContext.js';
 import { AuthProvider } from './AuthContext';
-import LoginScreen from './screens/login/UserStack.tsx';
+import { ProfileProvider } from './ProfileContext.js';
+import UserStack from './screens/login/UserStack.tsx';
 
 function App() {
   type Stack = {
@@ -89,10 +90,11 @@ function App() {
   return (
     <AuthProvider>
       <FoodProvider>
-    
+        <ProfileProvider>
 
-        <LoginScreen />
-    
+          <UserStack />
+
+        </ProfileProvider>
       </FoodProvider>
     </AuthProvider>
 

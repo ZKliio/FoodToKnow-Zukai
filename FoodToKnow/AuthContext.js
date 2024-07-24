@@ -1,12 +1,13 @@
 import React, { createContext, useState, useContext } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth } from "firebase/auth";
+import { my_firebase_API_key } from './environment';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   
 const firebaseConfig = {
-  apiKey: "AIzaSyDH9x0MVqChBLsWHaqqqk-WMlUBSyG2uqQ",
+  apiKey: my_firebase_API_key,
   authDomain: "testing-180c7.firebaseapp.com",
   projectId: "testing-180c7",
   storageBucket: "testing-180c7.appspot.com",
