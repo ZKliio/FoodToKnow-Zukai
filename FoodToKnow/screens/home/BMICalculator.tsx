@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { CalculatorContext } from '../../CalculatorContext';
 
 const BMICalculator = () => {
+  const { caloriesValue, setCaloriesValue, proteinsValue, setProteinsValue } = useContext(CalculatorContext);
+
   const [gender, setGender] = useState('man');
   const [weight, setWeight] = useState('');
   const [height, setHeight] = useState('');
@@ -10,6 +13,9 @@ const BMICalculator = () => {
   const [activityLevel, setActivityLevel] = useState('1.2');
   const [bmr, setBmr] = useState(null);
   const [calories, setCalories] = useState(null);
+
+  const [proteinIntakeLow, setProteinIntakeLow] = useState(null);
+  const [proteinIntakeHigh, setProteinIntakeHigh] = useState(null);
 
   const calculateBMR = () => {
     const w = parseFloat(weight);
@@ -28,8 +34,29 @@ const BMICalculator = () => {
       bmrValue = 10 * w + 6.25 * h - 5 * a - 161;
     }
 
+    const activityFactor = parseFloat(activityLevel);
     setBmr(bmrValue);
-    setCalories(bmrValue * parseFloat(activityLevel));
+    setCalories(bmrValue * activityFactor);
+    setCaloriesValue(bmrValue * activityFactor);
+
+    calculateProteinIntake(w, activityFactor);
+  };
+
+  const calculateProteinIntake = (weight, activityFactor) => {
+    let proteinMultiplier;
+    if (activityFactor <= 1.2) {
+      proteinMultiplier = 0.8;
+    } else if (activityFactor >= 1.9) {
+      proteinMultiplier = 2;
+    } else {
+      proteinMultiplier = 0.8 + (activityFactor - 1.2) * (2 - 0.8) / (1.9 - 1.2);
+    }
+
+    // const proteinLow = weight * 0.8;
+    const proteinHigh = weight * proteinMultiplier;
+    // setProteinIntakeLow(proteinLow.toFixed(2));
+    // setProteinIntakeHigh(proteinHigh.toFixed(2));
+    setProteinsValue(proteinHigh.toFixed(2));
   };
 
   return (
@@ -98,6 +125,12 @@ const BMICalculator = () => {
         <View style={styles.result}>
           <Text style={styles.resultText}>BMR: {bmr.toFixed(2)} kcal/day</Text>
           <Text style={styles.resultText}>Calories needed: {calories.toFixed(2)} kcal/day</Text>
+          {proteinsValue && (
+            <View style={styles.proteinContainer}>
+              {/* <Text style={styles.resultText}>Minimum Protein Requirement: {proteinIntakeLow} </Text> */}
+              <Text style={styles.resultText}>Protein Required:  {proteinsValue} g/day</Text>
+            </View>
+          )}
         </View>
       )}
     </ScrollView>
@@ -117,8 +150,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    // width: '100%',
-    // backgroundColor: 'red',
     color: '#333',
   },
   label: {
@@ -170,6 +201,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
+  },
+  proteinContainer: {
+    marginTop: 10,
+    alignItems: 'center',
   },
 });
 

@@ -50,14 +50,15 @@ const styles = StyleSheet.create({
   container: {
   flex: 1,
   flexDirection: 'row',
-  padding: 8,
-  backgroundColor: 'rgb(190, 190, 190)',
+  padding: 15,
+  backgroundColor: 'rgb(90, 100, 205)',
   justifyContent: 'space-between',
   alignItems: 'center',
 },
   text: {
     fontSize: 15,
-    color: 'black'
+    color: 'rgb(220, 220, 220)',
+    fontWeight: 'bold',
   },
   addButton: {
     backgroundColor: 'rgb(100, 170, 255)',

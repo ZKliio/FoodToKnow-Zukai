@@ -4,10 +4,10 @@ import { getAuth } from "firebase/auth";
 const ProfileContext = createContext();
 
 export const ProfileProvider = ({ children }) => {
-    const name = useState('');
+    const [name, setName] = useState('');
 
   return (
-    <ProfileContext.Provider value={{ name }}>
+    <ProfileContext.Provider value={{ name, setName }}>
       {children}
     </ProfileContext.Provider>
   );

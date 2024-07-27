@@ -8,30 +8,81 @@ import {
     FlatList,
     Image,
     KeyboardAvoidingView,
+    Alert,
+    Platform,
+    PermissionsAndroid,
 } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import Geolocation from '@react-native-community/geolocation';
 import { useNavigation } from '@react-navigation/native';
 import GooglePlacesSDK from 'react-native-google-places-sdk';
 import { GOOGLE_API_KEY } from './environment';
 import { ScreenHeight, ScreenWidth } from 'react-native-elements/dist/helpers';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 // Initialize Google Places SDK
 GooglePlacesSDK.initialize(GOOGLE_API_KEY);
 
 const Map = () => {
-    const INITIAL_LAT = 1.2789;
-    const INITIAL_LONG = 103.8536;
-    const RADIUS = 100;
     const [searchText, setSearchText] = useState("");
     const [searchResults, setSearchResults] = useState([]);
+    const [region, setRegion] = useState(null);
     const navigation = useNavigation();
+
+    useEffect(() => {
+        requestLocationPermission();
+        getCurrentLocation();
+    }, []);
+
+    const requestLocationPermission = async () => {
+        if (Platform.OS === 'ios') {
+            Geolocation.requestAuthorization('whenInUse');
+        } else {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                    {
+                        title: "Location Permission",
+                        message: "App needs access to your location to show your current position.",
+                        buttonNeutral: "Ask Me Later",
+                        buttonNegative: "Cancel",
+                        buttonPositive: "OK"
+                    }
+                );
+                if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+                    Alert.alert("Permission Denied", "Location permission is required to use this feature.");
+                }
+            } catch (err) {
+                console.warn(err);
+            }
+        }
+    };
+
+    const getCurrentLocation = () => {
+        Geolocation.getCurrentPosition(
+            position => {
+                const { latitude, longitude } = position.coords;
+                setRegion({
+                    latitude,
+                    longitude,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                });
+            },
+            error => {
+                console.log(error);
+                Alert.alert("Error", "Failed to get current location.");
+            },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        );
+    };
 
     const searchPlaces = async () => {
         if (!searchText.trim().length) return;
 
         const googleApisURL = "https://maps.googleapis.com/maps/api/place/textsearch/json";
         const input = searchText.trim();
-        const location = `${INITIAL_LAT},${INITIAL_LONG}&radius=${RADIUS}}`;
+        const location = `${region.latitude},${region.longitude}&radius=100`;
         const url = `${googleApisURL}?query=${input}&location=${location}&key=${GOOGLE_API_KEY}`;
 
         try {
@@ -41,13 +92,6 @@ const Map = () => {
         } catch (error) {
             console.log(error);
         }
-    };
-
-    const initialRegion = {
-        latitude: INITIAL_LAT,
-        longitude: INITIAL_LONG,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
     };
 
     const renderItem = ({ item }) => (
@@ -75,20 +119,21 @@ const Map = () => {
     return (
         <KeyboardAvoidingView style={{ flex: 1 }}>
             <View style={styles.container}>
-                <MapView
-                    provider={PROVIDER_GOOGLE}
-                    style={styles.map}
-                    initialRegion={initialRegion}
-                >
-                    <Marker
-                        coordinate={{
-                            latitude: 1.3938,
-                            longitude: 103.9127,
-                        }}
-                        title={"Marker Title"}
-                        description={"Marker Description"}
-                    />
-                </MapView>
+                {region && (
+                    <MapView
+                        provider={PROVIDER_GOOGLE}
+                        style={styles.map}
+                        region={region}
+                    >
+                        <Marker
+                            coordinate={{
+                                latitude: region.latitude,
+                                longitude: region.longitude,
+                            }}
+                            title={"Current Location"}
+                        />
+                    </MapView>
+                )}
                 <View style={styles.searchBox}>
                     <TextInput 
                         value={searchText}
@@ -98,6 +143,9 @@ const Map = () => {
                     />
                     <TouchableOpacity onPress={searchPlaces} style={styles.searchButton}>
                         <Text style={styles.text}>Search place</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={getCurrentLocation} style={styles.locationButton}>
+                        <Icon name="map-marker" size={20} color="rgb(100, 170, 255)" />
                     </TouchableOpacity>
                 </View>
                 <FlatList
@@ -117,7 +165,7 @@ const styles = StyleSheet.create({
     },
     map: {
         width: ScreenWidth,
-        height: 0.2 * ScreenHeight,
+        height: 0.35 * ScreenHeight,
     },
     searchBox: {
         flexDirection: 'row',
@@ -139,6 +187,12 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     searchButton: {
+        backgroundColor: '#fff',
+        padding: 10,
+        borderRadius: 10,
+        marginLeft: 10,
+    },
+    locationButton: {
         backgroundColor: '#fff',
         padding: 10,
         borderRadius: 10,

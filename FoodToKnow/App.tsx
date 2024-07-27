@@ -76,6 +76,7 @@ import {Profiles} from './schemas/Profiles';
 import { FoodProvider } from './FoodContext.js';
 import { AuthProvider } from './AuthContext';
 import { ProfileProvider } from './ProfileContext.js';
+import { CalculatorProvider } from './CalculatorContext';
 import UserStack from './screens/login/UserStack.tsx';
 
 function App() {
@@ -90,11 +91,13 @@ function App() {
   return (
     <AuthProvider>
       <FoodProvider>
+        <CalculatorProvider>
         <ProfileProvider>
 
           <UserStack />
 
         </ProfileProvider>
+        </CalculatorProvider>
       </FoodProvider>
     </AuthProvider>
 

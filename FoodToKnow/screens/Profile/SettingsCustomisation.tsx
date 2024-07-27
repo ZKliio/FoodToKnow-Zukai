@@ -10,12 +10,12 @@ import {
   signOut, 
   sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigation, CommonActions, StackActions } from '@react-navigation/native';
-import EditProfile from './EditProfile';
-
+import { useProfile } from '../../ProfileContext';
 
 const SettingsCustomisation = () => {
     const navigation = useNavigation();
     const {auth, email, setEmail} = useAuth();
+    const { name, setName } = useProfile();
 
     const handleLogout = async () => {
         try {
@@ -48,7 +48,7 @@ const SettingsCustomisation = () => {
   return (
     <View style={styles.container}>
       <Image source={{ uri: 'https://i.pravatar.cc/' }} style={styles.profileImage} />
-      <Text style={styles.name}>John Doe</Text>
+      <Text style={styles.name}>{name}</Text>
       <Text style={styles.email}>{email}</Text>
 
       <Text style={styles.sectionTitle}>Dietary Preferences</Text>

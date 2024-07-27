@@ -1,4 +1,3 @@
-// EditProfile.tsx
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { useAuth } from '../../AuthContext';
@@ -9,19 +8,27 @@ const EditProfile = () => {
   const { email, setEmail } = useAuth();
   const navigation = useNavigation();
   const { name, setName } = useProfile();
+  const [localName, setLocalName] = useState(name);
   const [dietaryPreferences, setDietaryPreferences] = useState('Vegetarian');
   const [healthGoals, setHealthGoals] = useState('Maintain Weight');
 
   const handleSave = () => {
     // Implement save logic here
     console.log('Profile saved');
+    console.log('email', email);
+    console.log('name', localName);
+    setName(localName);
     navigation.goBack();
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Name</Text>
-      <TextInput style={styles.input} value={name} onChangeText={setName} />
+      <TextInput
+        style={styles.input}
+        value={localName}
+        onChangeText={setLocalName}
+      />
 
       <Text style={styles.label}>Email</Text>
       <TextInput style={styles.input} value={email} onChangeText={setEmail} editable={false} />
@@ -46,8 +53,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   label: {
-    fontSize: 16,
+    fontSize: 25,
     marginBottom: 8,
+    color: 'black',
   },
   input: {
     borderWidth: 1,
@@ -55,6 +63,9 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 20,
     borderRadius: 5,
+    fontSize: 20,
+    color: 'black',
+    fontWeight: 'bold',
   },
   button: {
     backgroundColor: '#007bff',
@@ -64,7 +75,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 20,
   },
 });
 
