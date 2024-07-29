@@ -1,11 +1,18 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
-import { getAuth } from "firebase/auth";
+import 
+{ 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  onAuthStateChanged, 
+  signOut, 
+  sendPasswordResetEmail 
+} 
+from 'firebase/auth';
 import { my_firebase_API_key } from './environment';
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-  
 const firebaseConfig = {
   apiKey: my_firebase_API_key,
   authDomain: "testing-180c7.firebaseapp.com",
@@ -16,14 +23,36 @@ const firebaseConfig = {
   measurementId: "G-78CKP7GKXL"
 };
 
-  const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+export const AuthProvider = ({ children }) => {
+
   const auth = getAuth(app);
   const [email, setEmail] = useState('');
+  const [user, setUser] = useState(null);
   const [password, setPassword] = useState('');
   // const [isLogin, setIsLogin] = useState(true);
   const [loginCheck, setLoginCheck] = useState(false);
+  const [userId, setUserId] = useState();
+  
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ auth, email, setEmail, password, setPassword, loginCheck, setLoginCheck }}>
+    <AuthContext.Provider value={{ 
+      // userId,
+      // setUserId, 
+      app, 
+      auth, 
+      user, 
+      email, setEmail, 
+      password, setPassword, 
+      loginCheck, setLoginCheck }}  >
       {children}
     </AuthContext.Provider>
   );

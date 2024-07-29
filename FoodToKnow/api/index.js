@@ -23,7 +23,9 @@ const conn2 = mongoose.createConnection('mongodb+srv://Poweryo:U.HuF*k67c$jfgv@c
 });
 
 const Food = conn1.model('food', require('./models/foodInfo'));
+const User = conn1.model('user', require('./models/userInfo'));
 const Meal = conn2.model('Meal', require('./models/meal'));
+
 
 // Fetch all food info
 app.get('/foodInfo', (req, res) => {
@@ -150,6 +152,122 @@ app.delete('/meals/:userId', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+// Fetch user info
+app.get('/userInfo/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try{
+    const user = await User.findOne({ userId: userId });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error('Error fetching user info:', error);
+    res.status(500).send('Error fetching user info');
+  }
+});
+
+// // Fetch meals by userId and date
+// app.get('/meals/:userId/:date', async (req, res) => {
+//   const { userId, date } = req.params;
+//   try {
+//     const meals = await Meal.findOne({ userId, Date: date });
+//     if (!meals) {
+//       return res.status(404).json({ error: 'Meals not found for this user and date' });
+//     }
+//     res.status(200).json(meals);
+//   } catch (error) {
+//     console.error('Error fetching meals:', error);
+//     res.status(500).send('Error fetching meals');
+//   }
+// });
+
+
+// Update user info for a specific user
+app.put('/userInfo/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const { caloriesreq, proteinsreq } = req.body;
+
+  try {
+    const updatedUserInfo = await User.findOneAndUpdate(
+      { userId },
+      { caloriesreq, proteinsreq },
+      { new: true, upsert: true }
+    );
+
+    res.status(200).json({ message: 'User info updated successfully', userInfo: updatedUserInfo });
+  } catch (error) {
+    console.error('Error updating user info:', error);
+    res.status(500).send('Error updating user info');
+  }
+});
+
+
+// Create user info for a specific user
+app.post('/userInfo/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const { email, caloriesreq, proteinsreq } = req.body;
+
+  try {
+    const existingUserInfo = await User.findOne({ userId });
+
+    if (existingUserInfo) {
+      return res.status(400).json({ message: 'User info already exists. Use PUT to update.' });
+    }
+
+    const newUserInfo = new User({
+      userId,
+      email,
+      caloriesreq,
+      proteinsreq,
+    });
+
+    await newUserInfo.save();
+
+    res.status(201).json({ message: 'User info created successfully', userInfo: newUserInfo });
+  } catch (error) {
+    console.error('Error creating user info:', error);
+    res.status(500).send('Error creating user info');
+  }
+});
+
+// // Fetch user info
+// app.get('/userInfo/:userId', async (req, res) => {
+//   const { userId } = req.params;
+//   const { name } = req.body;
+//   try{
+//     const user = await User.findOne({ userId: userId });
+//     if (!user) {
+//       return res.status(404).json({ error: 'User not found' });
+//     }
+//     res.status(200).json(name);
+//   } catch (error) {
+//     console.error('Error fetching user info:', error);
+//     res.status(500).send('Error fetching user info');
+//   }
+// });
+
+// app.post('/userInfo/:userId', async (req, res) => {
+//   const { userId } = req.params;
+//   const { name } = req.body;
+//   try{
+//     const user = await User.findOneAndUpdate(
+//       { userId },
+//       { name },
+//       { new: true, upsert: true }
+//     );
+//     if (!user) {
+//       return res.status(404).json({ error: 'User not found' });
+//     }
+//     res.status(200).json({ message: 'User info updated successfully', userInfo: user });
+//   } catch (error) {
+//     console.error('Error updating user info:', error);
+//     res.status(500).send('Error updating user info');
+//   }
+// });
+
+
 
 app.listen(port, () => {
   console.log('Server listening on port ' + port);

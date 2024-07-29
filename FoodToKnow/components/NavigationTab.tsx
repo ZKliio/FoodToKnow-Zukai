@@ -52,8 +52,8 @@ const AppNavigation = () => {
         <Tab.Screen name="FoodInfo" component={Searchbar} />
         <Tab.Screen name="BMR Calculator" component={BMICalculator} />
         <Tab.Screen name="FoodFinder" component={FoodFinder} />
-        <Tab.Screen name="Profile" component={SettingsCustomisation} />
-        <Tab.Screen name="ProfileStack" component={ProfileStack} />
+        {/* <Tab.Screen name="Profile" component={SettingsCustomisation} /> */}
+        <Tab.Screen name="Profile" component={ProfileStack} />
         {/* <Tab.Screen name="UserStack" component={UserStack} /> */}
       </Tab.Navigator>
      </NavigationContainer>

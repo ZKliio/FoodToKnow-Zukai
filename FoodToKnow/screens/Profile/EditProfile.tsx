@@ -3,6 +3,7 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-nativ
 import { useAuth } from '../../AuthContext';
 import { useProfile } from '../../ProfileContext';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 const EditProfile = () => {
   const { email, setEmail } = useAuth();
@@ -18,6 +19,7 @@ const EditProfile = () => {
     console.log('email', email);
     console.log('name', localName);
     setName(localName);
+    
     navigation.goBack();
   };
 

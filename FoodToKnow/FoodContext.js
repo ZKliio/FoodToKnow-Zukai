@@ -120,7 +120,15 @@ const saveMeals = async () => {
     if (!existingMeals) {
       
       console.log('Creating new meals document for user:', userID, mealData);
-      await axios.post(`${SERVER_URL}/meals/${userID}/${formattedDate}`, mealData, formattedDate);
+      await axios.post(`${SERVER_URL}/meals/${userID}/${formattedDate}`, {
+        date: formattedDate,
+        selectedFoods: [],
+        selectedLunches: [],
+        selectedDinners: []
+      });
+      setSelectedFoods([]);
+      setSelectedLunches([]);
+      setSelectedDinners([]);
     } else {
       // console.log(existingMeals)
       // console.log(`meal data: ${JSON.stringify(mealData)}`)

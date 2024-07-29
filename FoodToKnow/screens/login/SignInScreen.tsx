@@ -23,12 +23,14 @@ import CustomButton from './CustomButton.tsx';
 import Homepage from '../home/Homepage.tsx';
 import AppNavigation from '../../components/NavigationTab.tsx';
 import login from './index.js';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication, handlePasswordReset }) => {
   return (
     <View style={styles.authContainer}>
-      <Text style={styles.title}>{isLogin ? 'Sign In' : 'Sign Up'}</Text>
+      <Image source = {logo} style = {styles.logo} />
+      <Text style={styles.title}>{isLogin ? 'Welcome to FoodToKnow!' : 'Sign up for an account now!'}</Text>
       <TextInput
         style={styles.input}
         value={email}
@@ -64,7 +66,6 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
 
 const AuthenticatedScreen = ({ user, handleAuthentication, auth }) => {
   const navigation = useNavigation();
-
   const homepage_handlePress = () => {
     navigation.navigate('App'); // Navigate to 'App');
   };
@@ -79,18 +80,33 @@ const AuthenticatedScreen = ({ user, handleAuthentication, auth }) => {
     }
   };
 
+    // Extract username from email {NEW}
+    const getUsernameFromEmail = (email) => {
+      return email ? email.split('@')[0] : 'Guest';
+    };
+  
+    const username = getUsernameFromEmail(user?.email);
+
   return (
-    <View>
-      <Text style={styles.emailText}>{user.email}</Text>
+      <ScrollView>
+        <View style = {styles.headerContainer}> 
+            <Text style = {styles.subheaderText}>
+              Ready to start the day healthy?
+            </Text>
+            <Text style = {styles.subheaderText}>
+              💪🍅🥕😊
+            </Text>
+        </View>
+      <Text style={styles.emailText}>Welcome back, {username}!</Text>
       <Button title="Logout" onPress={handleAuthentication} color="#e74c3c" />
       <Button title="Homepage" onPress={homepage_handlePress} color="rgb(50, 180, 130)" />
       <Button title="Change Password" onPress={handlePasswordReset} color="#3498db" />
-    </View>
+    </ScrollView>
   );
 };
 
 const App = () => {
-  const { auth, email, setEmail, password, setPassword, loginCheck, setLoginCheck } = useAuth();
+  const { auth, email, setEmail, password, setPassword, setLoginCheck,  } = useAuth();
   const [user, setUser] = useState(null);
   const [isLogin, setIsLogin] = useState(true);
 
@@ -112,7 +128,7 @@ const App = () => {
           await signInWithEmailAndPassword(auth, email, password);
           console.log('User signed in successfully!');
           setLoginCheck(true);
-          console.log('loginCheck', loginCheck)
+          console.log(email);
 
         } else {
           await createUserWithEmailAndPassword(auth, email, password);
@@ -135,6 +151,7 @@ const App = () => {
   };
 
   return (
+    <LinearGradient colors={['#ffafbd', '#ffc3a0']} style={styles.container}>
     <ScrollView contentContainerStyle={styles.container}>
       {user ? (
         <AuthenticatedScreen user={user} handleAuthentication={handleAuthentication} auth={auth} />
@@ -151,61 +168,167 @@ const App = () => {
         />
       )}
     </ScrollView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
+  gradient: {
+    height: '100%',
+    backgroundColor: 'black',
+  },
   container: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#f0f0f0',
+    padding: 0,   //this is the ULTIMATE PARENT THAT WILL ENCLOSE THE SIGNINSCREEN & AUTHENTICATED SCREEN
+    backgroundColor: 'transparent',
   },
   authContainer: {
     width: '100%',
     maxWidth: 400,
-    backgroundColor: '#fff',
+    height: '100%',
+    maxHeight: 700,
+    backgroundColor: 'white',
+    justifyContent: 'center',
     padding: 20,
     borderRadius: 8,
+    shadowColor: 'green',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 30,
+    elevation: 5,
   },
   title: {
     fontSize: 24,
+    fontWeight: 'bold',
+    fontFamily: 'serif',
     marginBottom: 16,
     textAlign: 'center',
+    color: 'green',
   },
   input: {
     height: 40,
-    borderColor: '#ddd',
+    borderColor: '#ccc',
     borderWidth: 1,
     marginBottom: 16,
     padding: 8,
     borderRadius: 4,
     color: 'black',
+    backgroundColor: '#fff',
   },
-  buttonContainer: {
+  button: {
+    backgroundColor: '#3498db',
+    paddingVertical: 12,
+    borderRadius: 4,
+    alignItems: 'center',
     marginBottom: 16,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   toggleText: {
     color: '#3498db',
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontStyle: 'italic',
     textAlign: 'center',
-  },
-  bottomContainer: {
-    marginTop: 20,
   },
   emailText: {
-    fontSize: 18,
+    fontSize: 50,
     textAlign: 'center',
     marginBottom: 20,
+    fontWeight: 'bold',
     color: 'black',
-  },
-  forgotPasswordContainer: {
-    marginBottom: 16,
   },
   forgotPasswordText: {
     color: '#3498db',
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontStyle: 'italic',
     textAlign: 'center',
+    marginBottom: 16,
   },
+  authenticatedContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logoutButton: {
+    backgroundColor: '#e74c3c',
+    paddingVertical: 12,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  homepageButton: {
+    backgroundColor: 'rgb(50, 180, 130)',
+    paddingVertical: 12,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  changePasswordButton: {
+    backgroundColor: '#3498db',
+    paddingVertical: 12,
+    borderRadius: 4,
+    alignItems: 'center',
+  },
+  logo: {
+    width: 400,
+    height: 400,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+    marginBottom: 1,
+  },
+
+//additional stuff for the UI part as of 28th July (Adapted from previous iterations of the UI code)
+
+    
+headerContainer: {
+  flex: 0.4,
+  backgroundColor: 'rgb(245,234,206)', // yellow
+  // flexWrap: 'nowrap',
+  // flexShrink: 1,
+},
+
+contentContainer:{
+  flex: 0,
+  marginTop: 0,
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: 'rgb(245,234,206)', // yellow
+  // flexWrap: 'wrap'
+
+},
+
+headerText:{
+  color: 'black',
+  fontSize: 30,
+  fontWeight: 'bold',
+  padding: 0,
+  marginBottom: 10,
+  
+},
+
+subheaderText:{
+  color: 'black',
+  // fontSize: 30,
+  fontWeight: 'bold',
+  padding: 0,
+  fontSize: 50,
+  textAlign: 'center',
+  // flexShrink:1
+  // fontSize:hp('3%')
+  // fontSize:RFValue(18),
+},
+contentText:{
+  color: 'black',
+  fontSize: 20,
+  fontWeight: 'bold',
+  padding: 0,
+},
 });
 
 export default App;

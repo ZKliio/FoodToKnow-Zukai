@@ -67,7 +67,8 @@ const UserStack = () => { //{ route }: Props
       
         <NavigationContainer independent={true}>    
             <Stack.Navigator  initialRouteName="SignIn" >
-                <Stack.Screen name="SignIn" component={SignInScreen} options = {{headerShown: false}}/>
+                
+                {/* options = {{headerShown: false}} */}
                 {/* <Stack.Screen name="Homepage" component = {Homepage} options = {{headerShown: false}}/> */}
               
 
@@ -79,10 +80,12 @@ const UserStack = () => { //{ route }: Props
                 <Stack.Screen name="Profile" component={Profile} /> 
                */}
                 {/* <Stack.Screen name="ProfileStack" component={ProfileNavigator} /> */}
+
+                {/* <Stack.Screen name="SignIn" component={SignInScreen} /> 
                 <Stack.Screen name="SignUp" component={SignUpScreen} />
                 <Stack.Screen name="ConfirmEmail" component={ConfirmEmailScreen} />
                 <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-                <Stack.Screen name="NewPassword" component={NewPasswordScreen} />
+                <Stack.Screen name="NewPassword" component={NewPasswordScreen} /> */}
             </Stack.Navigator>
         </NavigationContainer>
 

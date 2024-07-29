@@ -1,10 +1,21 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { CalculatorContext } from '../../CalculatorContext';
+import { useAuth } from '../../AuthContext';
 
 const BMICalculator = () => {
-  const { caloriesValue, setCaloriesValue, proteinsValue, setProteinsValue } = useContext(CalculatorContext);
+  const { 
+    caloriesValue, 
+    setCaloriesValue, 
+    proteinsValue, 
+    setProteinsValue,
+    updateUserInfo,
+    fetchUserInfo,
+  } = useContext(CalculatorContext);
+
+  const { email } = useAuth();
+  const userId = email.replace('@gmail.com', '');
 
   const [gender, setGender] = useState('man');
   const [weight, setWeight] = useState('');
@@ -13,9 +24,25 @@ const BMICalculator = () => {
   const [activityLevel, setActivityLevel] = useState('1.2');
   const [bmr, setBmr] = useState(null);
   const [calories, setCalories] = useState(null);
-
   const [proteinIntakeLow, setProteinIntakeLow] = useState(null);
   const [proteinIntakeHigh, setProteinIntakeHigh] = useState(null);
+
+  useEffect(() => {
+    fetchUserInfo(userId);
+  }, [userId]);
+
+  useEffect(() => {
+    if (caloriesValue && proteinsValue) {
+      setCalories(caloriesValue);
+      // Proteins value is already set by setProteinsValue in the context
+    }
+  }, [caloriesValue, proteinsValue]);
+
+  useEffect(() => {
+    if (caloriesValue && proteinsValue) {
+      updateUserInfo(userId);
+    }
+  }, [caloriesValue, proteinsValue]);
 
   const calculateBMR = () => {
     const w = parseFloat(weight);
@@ -36,8 +63,9 @@ const BMICalculator = () => {
 
     const activityFactor = parseFloat(activityLevel);
     setBmr(bmrValue);
-    setCalories(bmrValue * activityFactor);
-    setCaloriesValue(bmrValue * activityFactor);
+    const calculatedCalories = bmrValue * activityFactor;
+    setCalories(calculatedCalories.toFixed(2));
+    setCaloriesValue(calculatedCalories.toFixed(2));
 
     calculateProteinIntake(w, activityFactor);
   };
@@ -52,10 +80,7 @@ const BMICalculator = () => {
       proteinMultiplier = 0.8 + (activityFactor - 1.2) * (2 - 0.8) / (1.9 - 1.2);
     }
 
-    // const proteinLow = weight * 0.8;
     const proteinHigh = weight * proteinMultiplier;
-    // setProteinIntakeLow(proteinLow.toFixed(2));
-    // setProteinIntakeHigh(proteinHigh.toFixed(2));
     setProteinsValue(proteinHigh.toFixed(2));
   };
 
@@ -120,15 +145,17 @@ const BMICalculator = () => {
       <TouchableOpacity style={styles.button} onPress={calculateBMR}>
         <Text style={styles.buttonText}>Calculate</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={()=> fetchUserInfo(userId)}>
+        <Text style={styles.buttonText}>Retrieve</Text>
+      </TouchableOpacity>
 
       {bmr !== null && (
         <View style={styles.result}>
           <Text style={styles.resultText}>BMR: {bmr.toFixed(2)} kcal/day</Text>
-          <Text style={styles.resultText}>Calories needed: {calories.toFixed(2)} kcal/day</Text>
+          <Text style={styles.resultText}>Calories needed: {calories} kcal/day</Text>
           {proteinsValue && (
             <View style={styles.proteinContainer}>
-              {/* <Text style={styles.resultText}>Minimum Protein Requirement: {proteinIntakeLow} </Text> */}
-              <Text style={styles.resultText}>Protein Required:  {proteinsValue} g/day</Text>
+              <Text style={styles.resultText}>Protein Required: {proteinsValue} g/day</Text>
             </View>
           )}
         </View>
