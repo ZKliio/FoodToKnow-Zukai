@@ -52,6 +52,7 @@ const Searchbar = ({navigation}) => {
   };
 
   useEffect(() => {
+    console.log(SERVER_URL)
     const fetchData = async () => {
       setIsLoading(true);
       try {

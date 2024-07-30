@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext'; // Adjust import based on your project structure
-import { SERVER_URL } from './environment';
+import { SERVER_URL } from './environment'; // Adjust import based on your project structure or environment';
 
 export const FoodContext = createContext();
 
