@@ -27,6 +27,10 @@ const User = conn1.model('user', require('./models/userInfo'));
 const Meal = conn2.model('Meal', require('./models/meal'));
 
 
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
 // Fetch all food info
 app.get('/foodInfo', (req, res) => {
   Food.find()
@@ -79,7 +83,7 @@ app.put('/meals/:userId/:date', async (req, res) => {
 });
 
 // Create meals for a specific user (alternative to put)
-app.post('/meals/:userId', async (req, res) => {
+app.post('/meals/:userId/:date', async (req, res) => {
   const { userId } = req.params;
   const { selectedFoods, selectedLunches, selectedDinners, date } = req.body;
 
@@ -269,6 +273,8 @@ app.post('/userInfo/:userId', async (req, res) => {
 
 
 
-app.listen(port, () => {
-  console.log('Server listening on port ' + port);
-});
+// app.listen(port, () => {
+//   console.log('Server listening on port ' + port);
+// });
+
+module.exports = app;

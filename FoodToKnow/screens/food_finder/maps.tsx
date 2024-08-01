@@ -15,13 +15,9 @@ import {
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import { useNavigation } from '@react-navigation/native';
-import GooglePlacesSDK from 'react-native-google-places-sdk';
 import { GOOGLE_API_KEY } from './environment';
 import { ScreenHeight, ScreenWidth } from 'react-native-elements/dist/helpers';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
-// Initialize Google Places SDK
-GooglePlacesSDK.initialize(GOOGLE_API_KEY);
 
 const Map = () => {
     const [searchText, setSearchText] = useState("");
@@ -31,12 +27,18 @@ const Map = () => {
 
     useEffect(() => {
         requestLocationPermission();
-        getCurrentLocation();
     }, []);
+
+    useEffect(() => {
+        if (region) {
+            getCurrentLocation();
+        }
+    }, [region]);
 
     const requestLocationPermission = async () => {
         if (Platform.OS === 'ios') {
             Geolocation.requestAuthorization('whenInUse');
+            getCurrentLocation();
         } else {
             try {
                 const granted = await PermissionsAndroid.request(
@@ -49,7 +51,9 @@ const Map = () => {
                         buttonPositive: "OK"
                     }
                 );
-                if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    getCurrentLocation();
+                } else {
                     Alert.alert("Permission Denied", "Location permission is required to use this feature.");
                 }
             } catch (err) {
@@ -124,6 +128,7 @@ const Map = () => {
                         provider={PROVIDER_GOOGLE}
                         style={styles.map}
                         region={region}
+                        onRegionChangeComplete={setRegion}
                     >
                         <Marker
                             coordinate={{

@@ -27,10 +27,10 @@ const MealPlanner = ({mealTiming}) => { //
   const [filterCondition, setFilterCondition] = useState('');
   const [editingMeal, setEditingMeal] = useState(null);
 
-  const {email, setEmail} = useAuth();
+  const {email, setEmail, loginCheck} = useAuth();
   const userID = email.replace('@gmail.com','')
 
-  const { selectedFoods, addFood, selectedLunches, addLunch, selectedDinners, addDinner, 
+  const { selectedDate, selectedFoods, addFood, selectedLunches, addLunch, selectedDinners, addDinner, 
     saveMeals, fetchMeals, 
     deleteFood, deleteLunch, deleteDinner,
     breakfastCalories,
@@ -47,6 +47,10 @@ const MealPlanner = ({mealTiming}) => { //
 
   const navigation = useNavigation();
 
+  useEffect(() => {
+    console.log('Fetching meals for user:', userID);
+    fetchMeals();
+  }, [loginCheck]);
 
  const addDetails = () => {
     navigation.navigate('FoodInfo')

@@ -14,6 +14,14 @@ export const FoodProvider = ({ children }) => {
   const { loginCheck, setLoginCheck } = useAuth();
   const [selectedDate, setSelectedDate] = useState(new Date());
 
+  useEffect(() => {
+    fetchMeals(selectedDate);
+  }, [userID, selectedDate]);
+
+  // useEffect(() => {
+  //   fetchMeals(selectedDate);
+  // }, [userID, selectedDate]);
+
   const fetchMeals = async (date) => {
     const formattedDate = new Date(selectedDate).toLocaleDateString('en-GB', {
       day: '2-digit',
@@ -63,9 +71,7 @@ export const FoodProvider = ({ children }) => {
     }
   };
   
-  useEffect(() => {
-    fetchMeals(selectedDate);
-  }, [userID, selectedDate]);
+  
   
 
   // const saveMeals = async () => {
@@ -84,66 +90,60 @@ export const FoodProvider = ({ children }) => {
   //     console.error('Error saving meals:', error);
   //   }
   // };
-const saveMeals = async () => {
-  const formattedDate = new Date(selectedDate).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  }).replace(/\//g, '-');
-
-  if (!userID) return;
-
-  try {
-    console.log('Saving meals for user:', userID);
-
-    let existingMeals = null;
+  const saveMeals = async () => {
+    const formattedDate = new Date(selectedDate)
+      .toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })
+      .replace(/\//g, '-');
+  
+    if (!userID) return;
+    if (!loginCheck) return;
+  
     try {
-      const response = await axios.get(`${SERVER_URL}/meals/${userID}/${formattedDate}`);
-      existingMeals = response.data;
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        console.log('Meals not found for user:', userID);
-      } else {
-        throw error;
+      console.log('Saving meals for user:', userID);
+  
+      let existingMeals = null;
+  
+      try {
+        const response = await axios.get(`${SERVER_URL}/meals/${userID}/${formattedDate}`);
+        existingMeals = response.data;
+      } catch (error) {
+        if (error.response && error.response.status !== 404) {
+          console.error('Error fetching existing meals:', error);
+          alert('Failed to fetch existing meals. Please try again later.');
+          return;
+        }
       }
-    }
-
-    // const currentDate = new Date(); // Example: current date
-    const mealData = {
-      userId: userID,
-      selectedFoods,
-      selectedLunches,
-      selectedDinners,
-      date: formattedDate, // Include the Date field with a valid date
-    };
-
-    if (!existingMeals) {
-      
-      console.log('Creating new meals document for user:', userID, mealData);
-      await axios.post(`${SERVER_URL}/meals/${userID}/${formattedDate}`, {
+  
+      const mealData = {
+        userId: userID,
+        selectedFoods: selectedFoods || [],
+        selectedLunches: selectedLunches || [],
+        selectedDinners: selectedDinners || [],
         date: formattedDate,
-        selectedFoods: [],
-        selectedLunches: [],
-        selectedDinners: []
-      });
-      setSelectedFoods([]);
-      setSelectedLunches([]);
-      setSelectedDinners([]);
-    } else {
-      // console.log(existingMeals)
-      // console.log(`meal data: ${JSON.stringify(mealData)}`)
-      console.log('Updating meals document for user:', userID);
-      await axios.put(`${SERVER_URL}/meals/${userID}/${formattedDate}`, mealData, formattedDate);
+      };
+  
+      if (!existingMeals) {
+        console.log('Creating new meals document for user:', userID, mealData);
+        await axios.post(`${SERVER_URL}/meals/${userID}/${formattedDate}`, mealData);
+        setSelectedFoods(selectedFoods || [],);
+        setSelectedLunches(selectedLunches || []);
+        setSelectedDinners(selectedDinners || []);
+      } else {
+        console.log('Updating meals document for user:', userID, mealData);
+        await axios.put(`${SERVER_URL}/meals/${userID}/${formattedDate}`, mealData);
+      }
+  
+      alert('Meals saved successfully!');
+    } catch (error) {
+      console.error('Error saving meals:', error);
+      alert('Failed to save meals. Please try again later.');
     }
-
-    alert('Meals saved successfully!');
-  } 
-  catch (error) {
-    console.error('Error saving meals:', error);
-    alert('Failed to save meals. Please try again later.');
-  }
-};
-
+  };
+  
   
   
 

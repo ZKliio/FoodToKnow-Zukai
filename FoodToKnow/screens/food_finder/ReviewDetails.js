@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
+        color: 'black',
     },
     searchField: {
         backgroundColor: 'white',
